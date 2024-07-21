@@ -4,7 +4,7 @@
 # Introduction
 Gebeta(ገበጣ) is an Ethiopian traditional board game, internationally known by its Arab name Mancala (Mankala or Manqala).
 
-<pre>This board-game appears to have had a long history, for a fragment of a pottery Gebeta(ገበጣ) board containing two rows, each of three holes, but clearly incomplete, dating from perhaps the sixth or seventh centuries A.D., was found at Matara at a depth of 1.80 metres by the Ethiopian Institute of Archaeology in 1959, as recorded by F. Anfray.<sup><a href=#1>[1]</a></sup></pre>
+<q>This board-game appears to have had a long history, for a fragment of a pottery Gebeta(ገበጣ) board containing two rows, each of three holes, but clearly incomplete, dating from perhaps the sixth or seventh centuries A.D., was found at Matara at a depth of 1.80 metres by the Ethiopian Institute of Archaeology in 1959, as recorded by F. Anfray.<sup><a href=#1>[1]</a></sup></q>
 
 This project attempts to recreate a digitally playable version(s) of Gebeta(ገበጣ). 
 
