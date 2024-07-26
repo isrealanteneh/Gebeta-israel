@@ -1,5 +1,5 @@
 # Welcome to Gebeta(ገበጣ) project!
-<img src="./img/proposal.PNG">
+<img src="./docs/img/proposal.PNG">
 
 # Introduction
 Gebeta(ገበጣ) is an Ethiopian traditional board game, internationally known by its Arab name Mancala (Mankala or Manqala).

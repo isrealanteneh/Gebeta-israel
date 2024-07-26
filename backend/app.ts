@@ -1,0 +1,1 @@
+//register your endpoints here and initiate the server
