@@ -1,1 +1,1 @@
-import"./404-page.js";
+/* empty css                             */

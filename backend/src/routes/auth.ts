@@ -6,6 +6,8 @@ import RevokedTokenModel from "../database/models/RevokedTokenModel";
 import { isEmail, isName, isPassword, isUsername } from "../utils/Validator";
 import { genVerifCode, hashPassword, signToken, verifyToken } from "../utils/security";
 import { validate as uuidValidator } from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
+import Emailer from "../utils/Emailer";
 
 const authRoute = Router()
 
@@ -15,22 +17,41 @@ interface ILogin {
 }
 
 authRoute.post('/login', async (req: Request, res: Response) => {
-    const loginInfo: ILogin = req.body;
+    const { email, password } = req.body;
 
-    if (!loginInfo.email || !loginInfo.password) {
+    if (!email || !password) {
         return res.status(400).json(
             new ReturnModel(
                 Status.ERROR,
-                `Email and password cannot be empty.`,
+                `Email and/or password cannot be empty.`,
                 400
             )
         );
     }
 
     try {
-        const data = await UserModel.findOne({ email: loginInfo.email });
+        // let userData: {
+        //     user_id?: string;
+        //     createdAt?: NativeDate;
+        //     f_name?: string;
+        //     l_name?: string;
+        //     username?: string;
+        //     email?: string;
+        //     password?: string;
+        //     imgUrl?: string;
+        //     verified?: {
+        //         isVerified?: boolean;
+        //         code?: string;
+        //     }
+        // };
 
-        if (!data) {
+        let userData;
+
+        if (isEmail(email)) {
+            userData = await UserModel.findOne({ email });
+        } else if (isUsername(email)) {
+            userData = await UserModel.findOne({ username: email });
+        } else {
             return res.status(401).json(
                 new ReturnModel(
                     Status.ERROR,
@@ -40,7 +61,7 @@ authRoute.post('/login', async (req: Request, res: Response) => {
             );
         }
 
-        if (!data || !data.verified?.isVerified) {
+        if (!userData || !userData.verified?.isVerified) {
             return res.status(401).json(
                 new ReturnModel(
                     Status.ERROR,
@@ -50,7 +71,7 @@ authRoute.post('/login', async (req: Request, res: Response) => {
             );
         }
 
-        const isMatch = await bcrypt.compare(loginInfo.password, data.password);
+        const isMatch = await bcrypt.compare(password, userData.password);
 
         if (!isMatch) {
             return res.status(401).json(
@@ -63,13 +84,13 @@ authRoute.post('/login', async (req: Request, res: Response) => {
         }
 
         const payload = {
-            id: data.user_id,
-            username: data.username,
-            email: data.email,
-            f_name: data.f_name,
-            l_name: data.l_name,
+            id: userData?.user_id,
+            username: userData?.username,
+            email: userData?.email,
+            f_name: userData?.f_name,
+            l_name: userData?.l_name,
             sessionStarted: Date.now(),
-            verified: (data) ? data.verified?.isVerified : false
+            verified: (userData) ? userData?.verified.isVerified : false
         };
 
         const JWT_SECRET = process.env.JWT_SECRET || "Super secret jwt key for this project.";
@@ -87,16 +108,15 @@ authRoute.post('/login', async (req: Request, res: Response) => {
                     200,
                     {
                         user: {
-                            id: data._id,
-                            username: data.username,
-                            name: data.f_name + ' ' + data.l_name,
-                            imgUrl: data.imgUrl || '/my-avatar.png'
+                            id: userData?.user_id,
+                            username: userData?.username,
+                            name: userData?.f_name + ' ' + userData?.l_name,
+                            imgUrl: userData?.imgUrl
                         }
-                        // access_token: accessToken,
-                        // refresh_token: refreshToken
                     }
                 )
             );
+
     } catch (err) {
         res.status(500).json(
             new ReturnModel(
@@ -210,7 +230,7 @@ authRoute.post('/signup', async (req: Request, res: Response) => {
 
     try {
         password = await hashPassword(password);
-        const newUser = await UserModel.create({ f_name, l_name, username, email, password, verified: { code: genVerifCode(), isVerified: false } });
+        const newUser = await UserModel.create({ user_id: uuidv4(), f_name, l_name, username, email, password, verified: { code: genVerifCode(), isVerified: false } });
         const returnData = {
             user_id: newUser.user_id,
             f_name: newUser.f_name,
@@ -220,10 +240,10 @@ authRoute.post('/signup', async (req: Request, res: Response) => {
             verified: false
         }
 
-        return res.status(201).json(new ReturnModel(Status.SUCCESS, "Your account created successfully. Please verify your account.", 201, returnData));
+        return res.status(201).cookie('user_id', returnData.user_id, { httpOnly: true }).json(new ReturnModel(Status.SUCCESS, "Your account created successfully. Please verify your account.", 201, returnData));
     } catch (err) {
         if (err?.code === 11000) {
-            const property = err.keyPattern.hasOwnProperty("username") ? "Username" : "Email";
+            const property = Object.keys(err?.keyPattern).join(',') //.hasOwnProperty("username") ? "Username" : "Email";
             return res.status(400).json(new ReturnModel(Status.ERROR, `${property} already in use, please try another.`, 400));
         } else {
             console.log(err);
@@ -234,17 +254,82 @@ authRoute.post('/signup', async (req: Request, res: Response) => {
 
 authRoute.get('/verify/:id', async (req: Request, res: Response) => {
     const uuid = req.params.id;
+    const { user_id: cookieUUID } = req.cookies;
+
+    if (uuid !== cookieUUID) {
+        return res.status(403).render('403-forbidden');
+    }
 
     if (!uuidValidator(uuid)) {
         return res.status(404).render('404-page');
     }
 
-    res.send("Okay we shall see" + uuid);
+    const userData = await UserModel.findOne(
+        {
+            user_id: uuid,
+            "verified.isVerified": false
+        }
+    );
+
+    if (userData && userData.email) {
+        new Emailer(
+            userData.email,
+            `Gebeta verification code`,
+            `${userData?.verified?.code}`
+        ).sendEmail().then(result => console.log(result)).catch(err => console.log(err));
+        res.status(200).render('verify');
+    } else {
+        res.status(403).render('403-forbidden');
+    }
 })
 
-authRoute.post('/verify', (req: Request, res: Response) => {
-    console.log(req.body)
-    res.send('responded')
+authRoute.post('/verify', async (req: Request, res: Response) => {
+    const { user_id, code } = req.body;
+    // const { user_id: cookieUUID } = req.cookies;
+
+    // if (user_id !== cookieUUID) {
+    //     return res.status(400).json(
+    //         new ReturnModel(Status.ERROR, "Invalid user_id.", 400, {
+    //             user_id,
+    //             code
+    //         })
+    //     );
+    // }
+
+    const userData = await UserModel.findOneAndUpdate(
+        {
+            user_id: user_id,
+            "verified.code": code,
+            "verified.isVerified": false
+        },
+        {
+            $set: {
+                verified: {
+                    code: code,
+                    isVerified: true
+                }
+            }
+        },
+        { new: true }
+    );
+
+    if (userData.verified.isVerified) {
+        return res.status(204).json(
+            new ReturnModel(
+                Status.SUCCESS,
+                "Your account successfully verified.",
+                204
+            )
+        )
+    } else {
+        return res.status(400).json(
+            new ReturnModel(
+                Status.ERROR,
+                "Your account verification was unsuccessful.",
+                400
+            )
+        )
+    }
 })
 
 authRoute.post('/forget', (req: Request, res: Response) => {

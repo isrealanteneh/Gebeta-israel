@@ -1,0 +1,31 @@
+.app {
+    display: flex;
+    justify-content: center;
+    padding: 3em 5em;
+    width: 100%;
+    min-height: 100vh;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    row-gap: 1rem;
+    min-width: 15em;
+    max-width: 25em;
+    width: 100%;
+    padding: 3em 3em;
+    height: fit-content;
+    box-shadow: var(--borderShadow);
+}
+
+.container-title {
+    text-align: center;
+}
+
+.warning-txt {
+    text-align: center;
+}
+
+.btn-1 {
+    align-self: flex-end;
+}

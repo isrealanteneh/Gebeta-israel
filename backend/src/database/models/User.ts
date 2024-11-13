@@ -1,12 +1,10 @@
 import mongoose from "mongoose";
-import { v4 as uuidv4 } from 'uuid';
 
 const userSchema = new mongoose.Schema({
     user_id: {
         type: String,
         required: [true, "UUID must be provided."],
-        unique: true,
-        default: uuidv4()
+        unique: true
     },
 
     f_name: {
@@ -38,8 +36,7 @@ const userSchema = new mongoose.Schema({
     },
 
     imgUrl: {
-        type: String,
-        unique: true
+        type: String
     },
 
     verified: {
