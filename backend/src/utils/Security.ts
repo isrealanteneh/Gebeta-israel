@@ -8,8 +8,8 @@ async function hashPassword(password: string) {
 }
 
 function genVerifCode() {
-	const hexCode = crypto.randomBytes(3).toString('hex').toUpperCase();
-	return hexCode;
+	const hexCode = parseInt(crypto.randomBytes(3).toString('hex'), 16) % 1000000;
+	return hexCode.toString().padStart(6, '0');
 }
 
 // function genJwtToken(payload, secret, expiresIn = 3600) {

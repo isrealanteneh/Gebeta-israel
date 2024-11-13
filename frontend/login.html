@@ -5,14 +5,29 @@
 	<meta charset="UTF-8" />
 	<link rel="icon" type="image/svg+xml" href="/vite.svg" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>Gebeta - Home</title>
+	<title>Gebeta - Login</title>
 </head>
 
 <body>
-	<div id="app">
-		<h1>Login Page</h1>
+	<div class="app" id="app">
+		<div class="container">
+			<h2 class="container-title open-sans-500">
+				Login
+			</h2>
+			<p id="warning-txt" class="warning-txt open-sans-400"></p>
+
+			<input type="email | text" name="email" placeholder="Email or Username" id="email-username"
+				class="input-1 open-sans-400">
+			<input type="password" name="pass" placeholder="Password" id="pass" class="input-1 open-sans-400">
+
+			<input type="submit" value="Login" class="btn-1 open-sans-400" id="login-btn">
+			<div class="link-action">
+				<a class="open-sans-400 link-1" href="/signup">Create account</a>
+				<a class="open-sans-400 link-1" href="/forget-password">Forget Password</a>
+			</div>
+		</div>
 	</div>
-	<script type="module" src="/src/main.ts"></script>
+	<script type="module" src="./src/login.ts"></script>
 </body>
 
 </html>

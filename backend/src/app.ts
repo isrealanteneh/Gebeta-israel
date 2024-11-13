@@ -8,6 +8,7 @@ import authRoute from './routes/auth';
 import mongoose from 'mongoose';
 import statusRoute from './routes/status';
 import path from 'path';
+import cookieParser from 'cookie-parser';
 
 config();
 const app = express();
@@ -25,6 +26,7 @@ const corsOptions = {
 app.set('views', [__dirname, 'views'].join(path.sep));
 app.set('view engine', 'ejs');
 app.use(cors(corsOptions))
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }))
 app.use(authRoute);

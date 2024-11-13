@@ -1,4 +1,4 @@
-import"./404-page.js";document.querySelector("#app").innerHTML=`
+/* empty css                             */document.querySelector("#app").innerHTML=`
   <div>
     
   </div>
