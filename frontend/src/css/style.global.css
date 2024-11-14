@@ -16,6 +16,13 @@
     box-sizing: border-box;
 }
 
+/* basic reset for padding and margin  */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 /* Font definition based on weights */
 
 .open-sans-300 {
