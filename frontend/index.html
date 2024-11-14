@@ -2,55 +2,57 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Gebeta - Login</title>
+	<meta charset="UTF-8" />
+	<link rel="icon" type="image/svg+xml" href="/vite.svg" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Gebeta - Login</title>
 </head>
 
 <body class="open-sans-300">
-  <!-- landing page section -->
-  <section class="landing-page">
-  <!-- Header Section -->
-  <header>
-    <nav class="navbar">
-      <div class="logo">
-          <a href="#"><img src="/src/asset/Logo.svg" alt="Logo Image"></a>
-      </div>
-      <ul class="nav-links">
-        <li><a href="#" class="open-sans-600">History</a></li>
-        <li><a href="#" class="open-sans-600">Tournaments</a></li>
-        <li><a href="#" class="open-sans-600">About Us</a></li>
-      </ul>
-      </nav>
-</header>
+	<!-- landing page section -->
+	<section class="landing-page">
+		<!-- Header Section This can be templated using EJS-->
+		<header>
+			<nav class="navbar">
+				<div class="logo">
+					<a href="#"><img src="/src/asset/Logo.svg" alt="Logo Image"></a>
+				</div>
+				<ul class="nav-links">
+					<li><a href="#" class="link-2 open-sans-400">History</a></li>
+					<li><a href="#" class="link-2 open-sans-400">Tournaments</a></li>
+					<li><a href="#" class="link-2 open-sans-400">About Us</a></li>
+				</ul>
+			</nav>
+		</header>
 
-<!-- Body Section -->
-<div class="body-container">
-    <div class="text-container">
-      <p class="open-sans-600">UNIQUELY DEVELOPED BY STUDENTS @DMU</p>
-      <h1 class="open-sans-700">Gebeta, Ethiopian Traditional Game</h1>
-      <p class="open-sans-400">Welcome to your go to place to experiencing the Ethiopian Cultural game, Gebeta. Play the game with your friends, read the history of the game, sponsor tournaments and participate in tournaments.</p>
-      <div class="landing-btn">
-        <button type="submit" id="tournaments" name="tournaments" class="btn btn1">Watch Tournaments</button>
-        <button type="submit" id="play" name="play" class="btn btn2">Play Now</button>
-      </div>
-    </div>
-    <div class="image-container">
-        <img src="/src/asset/Hero.svg" alt="landing Image">
-    </div>
-</div>
-
-<!-- landing bottom border -->
-<div class="page-border">
-  <img src="/src/asset/Vector 29.svg" alt="Page Border">
-</div>
-
-</section>
+		<!-- Body Section -->
+		<div class="body-container">
+			<div class="text-container">
+				<p class="open-sans-700">UNIQUELY DEVELOPED BY STUDENTS @DMU</p>
+				<h1 class="open-sans-700">Gebeta, Ethiopian Traditional Game</h1>
+				<p class="open-sans-400">Welcome to your go to place to experiencing the Ethiopian Cultural game,
+					Gebeta. Play
+					the game with your friends, read the history of the game, sponsor tournaments and participate in
+					tournaments.
+				</p>
+				<div class="landing-btn">
+					<button type="submit" id="tournaments" name="tournaments" class="open-sans-400 btn-1">Watch
+						Tournaments</button>
+					<button type="submit" id="play" name="play" class="open-sans-400 btn-1 btn-2">Play Now</button>
+				</div>
+			</div>
+			<div class="image-container">
+				<img src="/src/asset/Hero.svg" alt="landing Image">
+			</div>
+		</div>
 
 
-<div id="app"></div>
-  <script type="module" src="/src/landing.ts"></script>
+	</section>
+	<!-- landing bottom border -->
+	<div class="page-border">
+		<img src="/src/asset/Vector 29.svg" alt="Page Border">
+	</div>
+	<script type="module" src="/src/landing.ts"></script>
 </body>
 
 </html>

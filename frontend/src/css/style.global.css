@@ -115,6 +115,28 @@
     color: var(--accentColor);
 }
 
+.link-2 {
+    text-decoration: none;
+    color: var(--blackColor);
+}
+
+.link-2::after {
+    content: '';
+    display: block;
+    width: 0%;
+    height: 0.15rem;
+    background-color: var(--blackColor);
+    transition: 0.25s ease-in-out;
+}
+
+.link-2:hover::after {
+    content: '';
+    display: block;
+    height: 0.15rem;
+    width: 100%;
+    background-color: var(--blackColor);
+}
+
 /* For error and warning components */
 
 .warning-txt {
