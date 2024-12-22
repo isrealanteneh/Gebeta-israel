@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { Response as ReturnModel, Status } from "../../routes/Response";
-import { verifyToken } from "../../utils/security";
+import { verifyToken } from "../../utils/Security";
 
 
 

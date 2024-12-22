@@ -4,10 +4,10 @@ import { ActiveGames, ActiveUserStore, } from "../database/inmemory";
 import GameModel from "../database/models/Game";;
 
 const home = (ioServer: Server) => {
-    const ioHome = ioServer.of('/home')
-    ioHome.use(authPlayer);
 
-    ioHome.on('connect', (socket: any) => {
+    ioServer.use(authPlayer);
+
+    ioServer.on('connect', (socket: any) => {
         const activeUserStore: ActiveUserStore = ActiveUserStore.getInstance();
         activeUserStore.addUser(socket.user.id, {
             id: socket.user.id,
@@ -16,6 +16,13 @@ const home = (ioServer: Server) => {
             username: socket.user.username,
             socketId: socket.id
         });
+
+        ioServer.emit('user-went-online', {
+            id: socket.user.id,
+            isActive: true,
+            name: socket.user.f_name + ' ' + socket.user.l_name,
+            username: socket.user.username,
+        })
 
         socket.on('challenge', (msg: any, callback: any) => {
             const socketId = activeUserStore.getUser(msg.challengee)?.socketId
@@ -83,13 +90,15 @@ const home = (ioServer: Server) => {
             console.log(msg)
         })
 
-        socket.on('', (socket: any) => {
+        // socket.on('', (socket: any) => {
 
-        })
+        // })
 
         socket.on('disconnect', (reason: any) => {
+            ioServer.emit('user-went-offline', socket.user.id);
             activeUserStore.removeUser(socket.user.id);
-            console.log("User removed", activeUserStore.getAllUsers());
+
+            console.log("User removed", socket.user);
         })
     })
 }

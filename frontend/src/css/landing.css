@@ -6,20 +6,6 @@
     overflow-x: hidden;
 }
 
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 3rem;
-}
-
-.navbar .nav-links {
-    list-style: none;
-    display: flex;
-    font-size: 1.8em;
-    gap: 1rem;
-}
-
 /* body styling */
 
 .body-container {
@@ -30,7 +16,7 @@
 }
 
 .image-container {
-    justify-self: flex-end;
+    justify-self: center;
 }
 
 .image-container img {

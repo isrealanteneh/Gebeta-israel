@@ -1,7 +1,11 @@
 import { Router } from "express";
+import authUser from "../auth/middleware/http.auth";
 
 const tournamentRoute = Router();
 
-export default tournamentRoute.get("/", (req, res) => {
-  res.json("Game route");
+tournamentRoute.get("/tournaments/active", authUser, (req, res) => {
+  res.json("Active Tournament");
 });
+
+
+export default tournamentRoute;

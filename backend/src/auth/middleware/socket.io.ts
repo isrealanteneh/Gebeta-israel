@@ -1,4 +1,4 @@
-import { verifyToken } from "../../utils/security";
+import { verifyToken } from "../../utils/Security";
 import AuthError from "../error";
 
 export const authPlayer = (socket: any, next: Function) => {
@@ -7,12 +7,8 @@ export const authPlayer = (socket: any, next: Function) => {
         socket.user = payload;
         next()
     } catch (error) {
-        socket.disconnect(true);
+        // socket.disconnect(true);
         next(new AuthError());
+        // throw new AuthError("Authentication faild.")
     }
-}
-
-
-export const authGameSession = () => {
-
 }

@@ -4,16 +4,11 @@
     --whiteColor: #ffffff;
     --blackColor: #000000;
     --accentColor: #633403;
-    --diabledAccentColor: #c79e75;
+    --disabledAccentColor: #c79e75;
     --errorColor: #c82d2d;
     --defaultBtnPadding: 0.5rem 1rem;
     --borderShadow: rgba(99, 53, 3, 0.25) 0px 6px 12px -2px, rgba(99, 53, 3, 0.3) 0px 3px 7px -3px;
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+    --listItemBorderShadow: rgba(33, 35, 38, 0.1) 0px 10px 10px -10px;
 }
 
 /* basic reset for padding and margin  */
@@ -92,8 +87,8 @@
 }
 
 .btn-disabled {
-    background-color: var(--diabledAccentColor);
-    border: 2px solid var(--diabledAccentColor);
+    background-color: var(--disabledAccentColor);
+    border: 2px solid var(--disabledAccentColor);
 }
 
 
@@ -107,8 +102,8 @@
 .input-1:hover {
     padding: var(--defaultBtnPadding);
     border-radius: .3rem;
-    border: 2px solid var(--diabledAccentColor);
-    outline-color: var(--diabledAccentColor);
+    border: 2px solid var(--disabledAccentColor);
+    outline-color: var(--disabledAccentColor);
 }
 
 .link-1 {
@@ -145,4 +140,31 @@
 
 .warning-input {
     border: 2px solid var(--errorColor);
+}
+
+/* Common layouts */
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 3rem;
+}
+
+.navbar .nav-links {
+    list-style: none;
+    display: flex;
+    font-size: 1.8em;
+    gap: 1.5rem;
+}
+
+/* List item component */
+
+.list-1 {
+    box-shadow: var(--listItemBorderShadow);
+}
+
+.thin-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: var(--disabledAccentColor) var(--whiteColor);
 }
