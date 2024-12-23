@@ -1,6 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap");
 
 :root {
+<<<<<<< HEAD
   --whiteColor: #ffffff;
   --blackColor: #000000;
   --accentColor: #633403;
@@ -15,6 +16,16 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+=======
+    --whiteColor: #ffffff;
+    --blackColor: #000000;
+    --accentColor: #633403;
+    --disabledAccentColor: #c79e75;
+    --errorColor: #c82d2d;
+    --defaultBtnPadding: 0.5rem 1rem;
+    --borderShadow: rgba(99, 53, 3, 0.25) 0px 6px 12px -2px, rgba(99, 53, 3, 0.3) 0px 3px 7px -3px;
+    --listItemBorderShadow: rgba(33, 35, 38, 0.1) 0px 10px 10px -10px;
+>>>>>>> e4ffa2bc8742b86c4b324c2b49ea05424aaf72ad
 }
 
 /* basic reset for padding and margin  */
@@ -109,8 +120,13 @@
 }
 
 .btn-disabled {
+<<<<<<< HEAD
   background-color: var(--diabledAccentColor);
   border: 2px solid var(--diabledAccentColor);
+=======
+    background-color: var(--disabledAccentColor);
+    border: 2px solid var(--disabledAccentColor);
+>>>>>>> e4ffa2bc8742b86c4b324c2b49ea05424aaf72ad
 }
 
 .input-1 {
@@ -121,14 +137,43 @@
 
 .input-1:focus,
 .input-1:hover {
+<<<<<<< HEAD
   padding: var(--defaultBtnPadding);
   border-radius: 0.3rem;
   border: 2px solid var(--diabledAccentColor);
   outline-color: var(--diabledAccentColor);
+=======
+    padding: var(--defaultBtnPadding);
+    border-radius: .3rem;
+    border: 2px solid var(--disabledAccentColor);
+    outline-color: var(--disabledAccentColor);
+>>>>>>> e4ffa2bc8742b86c4b324c2b49ea05424aaf72ad
 }
 
 .link-1 {
   color: var(--accentColor);
+}
+
+.link-2 {
+    text-decoration: none;
+    color: var(--blackColor);
+}
+
+.link-2::after {
+    content: '';
+    display: block;
+    width: 0%;
+    height: 0.15rem;
+    background-color: var(--blackColor);
+    transition: 0.25s ease-in-out;
+}
+
+.link-2:hover::after {
+    content: '';
+    display: block;
+    height: 0.15rem;
+    width: 100%;
+    background-color: var(--blackColor);
 }
 
 /* For error and warning components */
@@ -138,6 +183,7 @@
 }
 
 .warning-input {
+<<<<<<< HEAD
   border: 2px solid var(--errorColor);
 }
 
@@ -152,3 +198,34 @@
   grid-row-gap: 2em;
   align-items: center;
 }
+=======
+    border: 2px solid var(--errorColor);
+}
+
+/* Common layouts */
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 3rem;
+}
+
+.navbar .nav-links {
+    list-style: none;
+    display: flex;
+    font-size: 1.8em;
+    gap: 1.5rem;
+}
+
+/* List item component */
+
+.list-1 {
+    box-shadow: var(--listItemBorderShadow);
+}
+
+.thin-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: var(--disabledAccentColor) var(--whiteColor);
+}
+>>>>>>> e4ffa2bc8742b86c4b324c2b49ea05424aaf72ad

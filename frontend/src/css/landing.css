@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -167,3 +168,76 @@ h3 {
   font-size: 16px;
   z-index: 10;
 }
+=======
+.landing-page {
+    display: grid;
+    grid-template-rows: 0.2fr 1fr;
+    min-height: 100vh;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+/* body styling */
+
+.body-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    align-items: center;
+    padding: 0 3rem;
+}
+
+.image-container {
+    justify-self: center;
+}
+
+.image-container img {
+    width: 34rem;
+    object-fit: contain;
+}
+
+/* Text container */
+
+.text-container {
+    display: flex;
+    flex-direction: column;
+    row-gap: .6rem;
+    max-width: 40rem;
+    justify-self: center;
+}
+
+.text-container p {
+    font-size: 1.4em;
+}
+
+.text-container h1 {
+    color: var(--accentColor);
+    font-size: 3.5em;
+    line-height: 1em;
+}
+
+/* buttons  */
+.landing-btn {
+    margin-top: 1rem;
+}
+
+.landing-btn .btn-1 {
+    min-width: 12rem;
+    padding: .7rem 2rem;
+}
+
+.landing-btn .btn-2 {
+    padding: 1rem 2rem;
+    min-width: 12rem;
+    background-image: url("../asset/btn2-border.svg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: var(--whiteColor);
+    border-color: var(--whiteColor);
+    color: var(--accentColor);
+}
+
+.page-border img {
+    width: 100%;
+}
+>>>>>>> e4ffa2bc8742b86c4b324c2b49ea05424aaf72ad

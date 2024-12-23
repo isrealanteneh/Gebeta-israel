@@ -4,10 +4,9 @@ import './css/login.css'
 import SpinnerFullScreen from './components/SpinnerFullScreen';
 import { selectElement } from './utils/IncludeElements';
 import { isEmail, isPassword, isUsername } from './utils/Verification';
-import { httpService } from './utils/Network';
-import { Response } from './utils/Response';
+import { httpClient } from './utils/Network';
+import { Response } from './utils/ResponseModel';
 import { AxiosError } from 'axios';
-
 
 try {
     const uiElements = selectElement([
@@ -48,7 +47,7 @@ try {
         loginBtn.classList.add('btn-disabled');
         uiElements["#app"].appendChild(loadScreen)
 
-        httpService.post('/login', {
+        httpClient.post('/login', {
             email: uName.value,
             password: pass.value
         }).then(res => {
@@ -58,12 +57,18 @@ try {
 
             const resData = res?.data as Response;
             if (resData) {
+                console.log(resData.result?.accessToken, resData.result?.refreshToken)
+                sessionStorage.setItem('user', JSON.stringify(resData.result?.user))
+                sessionStorage.setItem('accessToken', resData.result?.accessToken || '')
+                sessionStorage.setItem('refreshToken', resData.result?.refreshToken || '')
                 window.location.href = "/home" ///" + (resData.result as { user_id: string }).user_id;
             }
         }).catch((err: AxiosError) => {
             const resData = err.response?.data as Response;
             if (resData)
                 uiElements['#warning-txt'].textContent = resData?.msg || "";
+            else
+                uiElements["#warning-txt"].textContent = err.message;
             loginBtn.disabled = false;
             loginBtn.classList.remove('btn-disabled');
             loadScreen.remove();

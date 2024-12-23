@@ -6,9 +6,10 @@ import { Server } from 'socket.io';
 import init from './socket.io-adapter';
 import authRoute from './routes/auth';
 import mongoose from 'mongoose';
-import statusRoute from './routes/status';
 import path from 'path';
 import cookieParser from 'cookie-parser';
+import playerRoute from './routes/players';
+import tournamentRoute from './routes/tournament';
 
 config();
 const app = express();
@@ -20,7 +21,8 @@ const corsOptions = {
         } else {
             callback(new Error('Not allowed by CORS'))
         }
-    }
+    },
+    credentials: true
 }
 
 app.set('views', [__dirname, 'views'].join(path.sep));
@@ -30,7 +32,8 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }))
 app.use(authRoute);
-app.use(statusRoute);
+app.use(playerRoute);
+app.use(tournamentRoute);
 
 const host: string = process.env.HOST || 'localhost';
 const port: number = parseInt(process.env.PORT || '3000');

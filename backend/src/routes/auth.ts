@@ -4,7 +4,7 @@ import UserModel from "../database/models/User";
 import bcrypt from 'bcryptjs';
 import RevokedTokenModel from "../database/models/RevokedTokenModel";
 import { isEmail, isName, isPassword, isUsername } from "../utils/Validator";
-import { genVerifCode, hashPassword, signToken, verifyToken } from "../utils/security";
+import { genVerifCode, hashPassword, signToken, verifyToken } from "../utils/Security";
 import { validate as uuidValidator } from 'uuid';
 import { v4 as uuidv4 } from 'uuid';
 import Emailer from "../utils/Emailer";
@@ -99,8 +99,8 @@ authRoute.post('/login', async (req: Request, res: Response) => {
         const refreshToken = signToken(payload, REFRESH_JWT_SECRET, { expiresIn: (60 * 60 * 24 * 7 * 2) }); // 2 weeks of span
 
         res.status(200)
-            .cookie("access_token", accessToken, { httpOnly: true })
-            .cookie("refresh_token", refreshToken, { httpOnly: true })
+            // .cookie("access_token", accessToken, { expires: new Date(Date.now() + 900000), secure: false, sameSite: 'lax', httpOnly: false })
+            // .cookie("refresh_token", refreshToken, { expires: new Date(Date.now() + 900000), secure: false, sameSite: 'lax', httpOnly: false })
             .json(
                 new ReturnModel(
                     Status.SUCCESS,
@@ -112,11 +112,12 @@ authRoute.post('/login', async (req: Request, res: Response) => {
                             username: userData?.username,
                             name: userData?.f_name + ' ' + userData?.l_name,
                             imgUrl: userData?.imgUrl
-                        }
+                        },
+                        accessToken,
+                        refreshToken
                     }
                 )
             );
-
     } catch (err) {
         res.status(500).json(
             new ReturnModel(
@@ -132,7 +133,7 @@ authRoute.post('/login', async (req: Request, res: Response) => {
 
 authRoute.post('/refresh-token', async (req: Request, res: Response) => {
     const { refresh_token } = req.body;
-
+    console.log(refresh_token)
     const JWT_SECRET = process.env.JWT_SECRET || "Super secret jwt key for this project.";
     const REFRESH_JWT_SECRET = process.env.REFRESH_JWT_SECRET || "Super secret refresh jwt key for this project.";
 
@@ -175,13 +176,16 @@ authRoute.post('/refresh-token', async (req: Request, res: Response) => {
         const accessToken = signToken(returnDecodedData, JWT_SECRET, { expiresIn: (60 * 30) }); //for 30 minutes
 
         return res.status(200)
-            .cookie("access_token", accessToken, { httpOnly: true })
+            // .cookie("access_token", accessToken, { httpOnly: true })
             .json(
                 new ReturnModel(
                     Status.SUCCESS,
                     `User logged in successfully.`,
                     200,
                     {
+                        user: {},
+                        accessToken,
+                        refreshToken: ''
                         // access_token: accessToken
                     }
                 )

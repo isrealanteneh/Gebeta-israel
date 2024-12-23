@@ -2,10 +2,10 @@ import "./css/style.global.css";
 import "./css/form-pages.css";
 import { selectElement } from "./utils/IncludeElements";
 import { isEmail, isName, isPassword, isUsername } from "./utils/Verification";
-import { httpService } from "./utils/Network";
+import { httpClient } from "./utils/Network";
 import SpinnerFullScreen from "./components/SpinnerFullScreen";
 import { AxiosError } from "axios";
-import { Response } from "./utils/Response";
+import { Response } from "./utils/ResponseModel";
 
 try {
     const uiElements = selectElement([
@@ -82,7 +82,7 @@ try {
 
         uiElements["#app"].appendChild(loadScreen)
 
-        httpService.post('/signup', {
+        httpClient.post('/signup', {
             f_name: fName.value,
             l_name: lName.value,
             username: uName.value,
