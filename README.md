@@ -16,6 +16,14 @@ This project attempts to recreate a digitally playable version(s) of Gebeta(áŒˆá
 - Mr. Kesahun Tsega
 - Prof. Richard Pankhurst OBE
 
+<hr>
+
+#Devs
+<a mailto="dawit.kebebe@dmu.edu.et">Dawit Kebebe</a>
+<a mailto="israel.anteneh@dmu.edu.et">Israel Anteneh</a>
+<a mailto="dawit.kebebe@dmu.edu.et">Dawit Kebebe</a>
+<a mailto="dawit.kebebe@dmu.edu.et">Dawit Kebebe</a>
+<a mailto="dawit.kebebe@dmu.edu.et">Dawit Kebebe</a>
 
 <hr>
 

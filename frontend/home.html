@@ -37,7 +37,7 @@
                     <div class="section-title ">
                         <img src="./src/asset/welcome-icon.svg" alt="welcome icon" srcset="">
                         <h1 class="open-sans-500">
-                            Welcome back to Gebeta, {{ }}!
+                            Welcome back to Gebeta, {{ userDeserialized.info.name }}!
                         </h1>
                     </div>
                     <div class="section-content profile-section-container">
@@ -270,7 +270,7 @@
                                 <li>{{activePlayer.isActive ? "Active" : "Inactive"}}</li>
                             </div>
                             <div class="call-to-action">
-                                <button class="btn-1" @click="viewProfile(activePlayer.id)">Challenge</button>
+                                <button class="btn-1" @click="challengePlayer(activePlayer.id)">Challenge</button>
                             </div>
                         </div>
                     </div>

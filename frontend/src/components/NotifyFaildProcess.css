@@ -1,0 +1,87 @@
+:root {
+    --transition-speed: .5s;
+    /* --transition-curve: cubic-bezier(.29, 1.01, 1, -0.68); */
+    --shadow-focus: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+    --shadow: rgba(17, 12, 46, 0.15) 0px 48px 100px 0px;
+    --transition-curve: ease-in;
+    --notification-size: 350px;
+    --transition: top var(--transition-speed) var(--transition-curve);
+}
+
+.notification {
+    position: fixed;
+    display: flex;
+    width: fit-content;
+    right: 0;
+    padding: 1em;
+    background-color: var(--whiteColor);
+    border-radius: .5em;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+    animation: slide-in var(--transition-speed) var(--transition-curve);
+}
+
+.content {
+    padding: .5em;
+}
+
+.title {
+    font-size: 1.2em;
+    margin-bottom: .2em;
+    font-weight: bold;
+    color: var(--errorColor);
+}
+
+.description {
+    color: gray;
+}
+
+.close {
+    font-size: 1em;
+    margin-left: auto;
+    padding: 0 .4em;
+    border: 0;
+    border-left: 2px solid var(--accentColor);
+    background-color: transparent;
+    border-radius: 0 .2em .2em 0;
+    color: gray;
+    cursor: pointer;
+}
+
+.close:hover {
+    background-color: lightgray;
+    color: var(--whiteColor);
+}
+
+.close:active {
+    color: gray;
+}
+
+.close:focus,
+.close:active {
+    outline: none;
+    /* box-shadow: var(--shadow-focus); */
+    background-color: lightgray;
+    color: var(--whiteColor);
+}
+
+.animate-out {
+    animation: fade-out var(--transition-speed) var(--transition-curve);
+}
+
+@keyframes fade-out {
+    to {
+        opacity: 0;
+        transform: translateX(var(--notification-size));
+    }
+}
+
+@keyframes slide-in {
+    from {
+        transform: translateX(var(--notification-size));
+    }
+
+    to {
+        transform: translateX(0);
+    }
+}

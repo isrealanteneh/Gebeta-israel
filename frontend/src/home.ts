@@ -6,6 +6,7 @@ import { isResponseModel, Response } from './utils/ResponseModel';
 import { ActiveEntities, Player, Tournament } from './utils/ActiveEntities';
 import { refreshAccessToken } from './utils/ReusableHttpRequests';
 import { AxiosError } from 'axios';
+import { Notification } from './components/NotifyFaildProcess';
 
 function viewProfile(userId: string) {
     console.log(userId);
@@ -89,12 +90,29 @@ async function handleUnauthorizedError(refreshToken: string) {
 
 
     socketClient.on('connect', () => console.log('connected'));
+
     socketClient.on('user-went-offline', (playerId: string) => {
         active.removePlayer(playerId)
     });
+
     socketClient.on('user-went-online', (player: Player) => {
         active.addPlayer(player);
     });
+
+    socketClient.on('challenge:faild', (reason: { challenge: any, msg: string }) => {
+        try {
+            const faildReqToPlayer = active.players.find((player: Player) => player.id === reason.challenge.challengee.id)
+            const appContainer = document.querySelector('#app') as HTMLDivElement;
+            Notification("Request Failed!", `${reason.msg} <br> Request to ${faildReqToPlayer.name} failed.`, appContainer);
+        } catch (err) {
+            console.log(err)
+        }
+    })
+
+    socketClient.on('challenge:incoming', (challenge: any) => {
+        console.log(challenge)
+    });
+
     socketClient.on('disconnect', (reason, desc) => console.log("reason", reason, "desc", desc));
 
     socketClient.on('connect_error', async (ex) => {
@@ -137,6 +155,15 @@ async function handleUnauthorizedError(refreshToken: string) {
         userDeserialized.setInfo(JSON.parse(userInfoSerialized));
     }
 
+    function challengePlayer(playerId: string) {
+        // console.log(playerId);
+        socketClient.emit('challenge', {
+            challenger: userDeserialized.info,
+            challengee: {
+                id: playerId
+            }
+        })
+    }
 
     const activeEntities = new ActiveEntities(accessToken || "");
 
@@ -154,6 +181,7 @@ async function handleUnauthorizedError(refreshToken: string) {
     }
 
     createApp({
+        challengePlayer,
         viewProfile,
         active,
         userDeserialized

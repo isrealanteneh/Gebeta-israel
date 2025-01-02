@@ -24,24 +24,27 @@ const home = (ioServer: Server) => {
             username: socket.user.username,
         })
 
-        socket.on('challenge', (msg: any, callback: any) => {
-            const socketId = activeUserStore.getUser(msg.challengee)?.socketId
-            if (socketId) {
-                socket.to(socketId).emit('challenge:incoming',
-                    {
-                        challenger: {
-                            id: socket.user.id,
-                            username: socket.user.username,
-                            f_name: socket.user.f_name,
-                            l_name: socket.user.l_name,
-                        },
-                        challengee: msg.challengee
+        socket.on('challenge', (msg: any) => {
+            const challengee = activeUserStore.getUser(msg.challengee.id)//?.socketId
+
+            if (challengee && false) {
+                socket.to(challengee.socketId).emit('challenge:incoming', {
+                    challenger: {
+                        id: socket.user.id,
+                        username: socket.user.username,
+                        name: `${socket.user.f_name} ${socket.user.l_name}`,
                     },
-                    (acknowledged: any) => {
-                        callback(acknowledged);
-                    })
+                    challengee: {
+                        id: challengee.id,
+                        username: challengee.username,
+                        name: challengee.name
+                    }
+                });
             } else {
-                callback(false)
+                socket.emit('challenge:faild', {
+                    challenge: msg,
+                    msg: "Could not find challengee."
+                })
             }
         })
 
