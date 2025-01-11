@@ -60,6 +60,14 @@
     overflow: hidden;
 }
 
+.welcome-container>.section-title {
+    border-bottom: 1px solid var(--accentColor);
+}
+
+.welcome-container>.section-title img {
+    width: 5em;
+}
+
 .section-content {
     height: 100%;
     overflow-y: scroll;
@@ -166,7 +174,7 @@ nav {
 
 .profile-section-container {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
 }
 

@@ -7,6 +7,11 @@ import { ActiveEntities, Player, Tournament } from './utils/ActiveEntities';
 import { refreshAccessToken } from './utils/ReusableHttpRequests';
 import { AxiosError } from 'axios';
 import { Notification } from './components/NotifyFaildProcess';
+import { IncomingRequest } from './components/IncomingReq';
+import SpinnerFullScreen from './components/SpinnerFullScreen';
+import { initGebeta } from './game/main';
+
+let App: any = null;
 
 function viewProfile(userId: string) {
     console.log(userId);
@@ -110,7 +115,18 @@ async function handleUnauthorizedError(refreshToken: string) {
     })
 
     socketClient.on('challenge:incoming', (challenge: any) => {
-        console.log(challenge)
+        IncomingRequest("Incoming Challenge", `<b>${challenge.challenger.name}</b> has challenged you to a game.`, document.querySelector('#app') as HTMLDivElement,
+            () => {
+                socketClient.emit('challenge:accepted', challenge);
+            },
+            () => {
+                socketClient.emit('challenge:rejected', challenge);
+            });
+    });
+
+    socketClient.on('game:start', (game: any) => {
+        console.log(game);
+        active.setPage('game');
     });
 
     socketClient.on('disconnect', (reason, desc) => console.log("reason", reason, "desc", desc));
@@ -156,7 +172,6 @@ async function handleUnauthorizedError(refreshToken: string) {
     }
 
     function challengePlayer(playerId: string) {
-        // console.log(playerId);
         socketClient.emit('challenge', {
             challenger: userDeserialized.info,
             challengee: {
@@ -180,10 +195,21 @@ async function handleUnauthorizedError(refreshToken: string) {
         }
     }
 
-    createApp({
+    App = createApp({
         challengePlayer,
         viewProfile,
         active,
-        userDeserialized
-    }).mount("#app");
+        userDeserialized,
+        showGameView() {
+            if (this.active.page === 'game') {
+                console.log("Game view is already active");
+                this.$nextTick(() => {
+                    console.log(document.querySelector('#canv'))
+                    initGebeta(document.querySelector('#canv') as HTMLCanvasElement);
+                });
+            }
+        }
+    });
+
+    App.mount("#app");
 })();

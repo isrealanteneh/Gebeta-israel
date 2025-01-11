@@ -309,7 +309,31 @@
                 </div>
             </div>
 
+            <div class="canv-container" v-if="active.page === 'game'">
+                <div class="player-container">
+                    <div class="avatar">
+                        <img src="./src/asset/user-profile-avatar-icon.svg" alt="" srcset="">
+                    </div>
+                    <div class="profile open-sans-500">
+                        <span>James Jani</span>
+                        <span>@James</span>
+                    </div>
+                </div>
+                <canvas id="canv"></canvas>
+                <div class="player-container">
+                    <div class="avatar">
+                        <img src="./src/asset/user-profile-avatar-icon.svg" alt="" srcset="">
+                    </div>
+                    <div class="profile open-sans-500">
+                        <span>James Jani</span>
+                        <span>@James</span>
+                    </div>
+                </div>
+                {{showGameView()}}
+            </div>
         </div>
+
+
     </div>
     <script type="module" src="/src/home.ts"></script>
 </body>

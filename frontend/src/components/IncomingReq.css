@@ -1,0 +1,42 @@
+.title {
+    font-size: 1.2em;
+    margin-bottom: .2em;
+    font-weight: bold;
+    color: var(--successColor);
+}
+
+.actions {
+    display: flex;
+    flex-direction: column;
+    row-gap: .5em;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 1em;
+    margin-left: auto;
+    padding: 0 .4em;
+    border: 0;
+    border-left: 2px solid var(--accentColor);
+    background-color: transparent;
+    border-radius: 0 .2em .2em 0;
+    color: gray;
+    cursor: pointer;
+}
+
+.actions button {
+    padding: .5em 1em;
+    border: none;
+    border-radius: .3em;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.actions .accept {
+    background-color: var(--successColor);
+    color: var(--whiteColor);
+}
+
+.actions .reject {
+    background-color: var(--errorColor);
+    color: var(--whiteColor);
+}

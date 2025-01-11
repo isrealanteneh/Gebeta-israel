@@ -1,8 +1,8 @@
-import './NotifyFaildProcess.css';
+import './IncomingReq.css';
 
 const margin = 16;
 
-const Notification = (title: string, msg: string, notificationPosition: HTMLDivElement): void => {
+const IncomingRequest = (title: string, msg: string, notificationPosition: HTMLDivElement, onAccept: () => void, onReject: () => void): void => {
     const notification = document.createElement("div");
     notification.classList.add("notification");
 
@@ -11,11 +11,24 @@ const Notification = (title: string, msg: string, notificationPosition: HTMLDivE
             <h4 class="title open-sans-500">${title}</h4>
             <p class="description open-sans-300">${msg}</p>
         </div>
-        <button class="close open-sans-300" aria-label="Dismiss notification">Close</button>
+        <div class="actions">
+            <button class="accept open-sans-300" aria-label="Accept request">Accept</button>
+            <button class="reject open-sans-300" aria-label="Reject request">Reject</button>
+        </div>
     `;
 
-    const closeButton = notification.querySelector(".close") as HTMLButtonElement;
-    closeButton.addEventListener("click", removeNotification);
+    const acceptButton = notification.querySelector(".accept") as HTMLButtonElement;
+    const rejectButton = notification.querySelector(".reject") as HTMLButtonElement;
+
+    acceptButton.addEventListener("click", () => {
+        onAccept();
+        removeNotification(notification);
+    });
+
+    rejectButton.addEventListener("click", () => {
+        onReject();
+        removeNotification(notification);
+    });
 
     notification.style.top = `${margin}px`;
     notificationPosition?.prepend(notification);
@@ -29,9 +42,7 @@ const Notification = (title: string, msg: string, notificationPosition: HTMLDivE
     });
 };
 
-const removeNotification = (event: MouseEvent): void => {
-    const closeButton = event.currentTarget as HTMLButtonElement;
-    const notification = closeButton.parentNode as HTMLDivElement;
+const removeNotification = (notification: HTMLDivElement): void => {
     const currentHeight = notification.offsetHeight;
 
     const restNotifications: HTMLDivElement[] = [];
@@ -53,4 +64,4 @@ const removeNotification = (event: MouseEvent): void => {
     });
 };
 
-export { Notification };
+export { IncomingRequest };

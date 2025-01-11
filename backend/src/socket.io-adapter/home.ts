@@ -1,7 +1,8 @@
 import { Server, Socket } from "socket.io";
 import { authPlayer } from "../auth/middleware/socket.io";
 import { ActiveGames, ActiveUserStore, } from "../database/inmemory";
-import GameModel from "../database/models/Game";;
+import GameModel from "../database/models/Game"; import { IGame } from "../game/Game";
+;
 
 const home = (ioServer: Server) => {
 
@@ -9,25 +10,27 @@ const home = (ioServer: Server) => {
 
     ioServer.on('connect', (socket: any) => {
         const activeUserStore: ActiveUserStore = ActiveUserStore.getInstance();
-        activeUserStore.addUser(socket.user.id, {
+        const user = {
             id: socket.user.id,
             isActive: true,
-            name: socket.user.f_name + ' ' + socket.user.l_name,
+            name: `${socket.user.f_name} ${socket.user.l_name}`,
             username: socket.user.username,
             socketId: socket.id
-        });
+        };
+
+        activeUserStore.addUser(user.id, user);
 
         ioServer.emit('user-went-online', {
-            id: socket.user.id,
-            isActive: true,
-            name: socket.user.f_name + ' ' + socket.user.l_name,
-            username: socket.user.username,
-        })
+            id: user.id,
+            isActive: user.isActive,
+            name: user.name,
+            username: user.username,
+        });
 
         socket.on('challenge', (msg: any) => {
-            const challengee = activeUserStore.getUser(msg.challengee.id)//?.socketId
+            const challengee = activeUserStore.getUser(msg.challengee.id);
 
-            if (challengee && false) {
+            if (challengee) {
                 socket.to(challengee.socketId).emit('challenge:incoming', {
                     challenger: {
                         id: socket.user.id,
@@ -44,48 +47,40 @@ const home = (ioServer: Server) => {
                 socket.emit('challenge:faild', {
                     challenge: msg,
                     msg: "Could not find challengee."
-                })
+                });
             }
-        })
+        });
 
-        socket.on('challenge:accepted', async (msg: any, callback: any) => {
-            const activeUser = activeUserStore.getUser(msg.challenger.id)
-            if (activeUser) {
-                // const game = await GameModel.create({
-                //     players: [activeUser.id, socket.user.id]
-                // });
+        socket.on('challenge:accepted', async (msg: any) => {
+            const activeChallenger = activeUserStore.getUser(msg.challenger.id)
+            const activeChallengee = activeUserStore.getUser(msg.challengee.id)
+            if (activeChallengee && activeChallenger) {
+                const game = new GameModel({
+                    challenger: {
+                        id: msg.challenger.id,
+                        username: msg.challenger.username,
+                        name: msg.challenger.name
+                    },
+                    challengee: {
+                        id: msg.challengee.id,
+                        username: msg.challengee.username,
+                        name: msg.challengee.name
+                    },
+                    status: "pending",
+                    moves: [],
+                    winner: null
+                });
 
-                // if (game) {
-                //     const activeGames = ActiveGames.getInstance();
+                await game.save();
 
-                //     const player1 = new Player(activeUser.id);
-                //     const player2 = new Player(socket.user.id);
-                //     const newGame = new Game([player1, player2]);
-                //     newGame.start();
-                //     activeGames.addGame(game._id.toString(), newGame);
+                const activeGames: ActiveGames = ActiveGames.getInstance();
+                activeGames.addGame(game.id, {} as IGame);
 
-                //     socket.to(activeUser.socketId).emit('challenge:accepted', {
-                //         challenger: msg.challenger,
-                //         challengee: {
-                //             id: socket.user.id,
-                //             username: socket.user.username,
-                //             f_name: socket.user.f_name,
-                //             l_name: socket.user.l_name,
-                //         },
-                //         gameId: game._id.toString()
-                //     })
-
-                //     socket.emit('challenge:accepted', {
-                //         challenger: msg.challenger,
-                //         challengee: {
-                //             id: socket.user.id,
-                //             username: socket.user.username,
-                //             f_name: socket.user.f_name,
-                //             l_name: socket.user.l_name,
-                //         },
-                //         gameId: game._id.toString()
-                //     })
-                // }
+                ioServer.to(activeChallenger.socketId).to(activeChallengee.socketId).emit('game:start', {
+                    gameId: game.id,
+                    challenger: msg.challenger,
+                    challengee: msg.challengee
+                });
             }
         })
 

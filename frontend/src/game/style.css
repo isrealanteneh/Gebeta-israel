@@ -1,0 +1,39 @@
+.canv-container {
+    display: flex;
+    flex-direction: column;
+    row-gap: 1em;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    /* border: .3rem solid red; */
+    height: 100%;
+}
+
+.player-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.avatar img {
+    width: 4.5em;
+    height: 4.5em;
+}
+
+.profile {
+    width: 6em;
+    border-radius: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    row-gap: .1em;
+    border: .05em solid var(--accentColor);
+    background-color: var(--whiteColor);
+    color: var(--accentColor);
+}
+
+.profile-active {
+    color: var(--whiteColor);
+    background-color: var(--accentColor);
+}
