@@ -65,7 +65,7 @@
 }
 
 .btn-disabled,
-.btn-1 {
+.btn {
     background-color: var(--accentColor);
     color: var(--whiteColor);
     padding: var(--defaultBtnPadding);

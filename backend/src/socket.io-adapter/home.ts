@@ -79,13 +79,22 @@ const home = (ioServer: Server) => {
                 ioServer.to(activeChallenger.socketId).to(activeChallengee.socketId).emit('game:start', {
                     gameId: game.id,
                     challenger: msg.challenger,
-                    challengee: msg.challengee
+                    challengee: msg.challengee,
+                    gameStatus: {
+                        turn: msg.challenger.id,
+                        move: null,
+                    }
                 });
             }
         })
 
         socket.on('challenge:rejected', (msg: any, callback: any) => {
             console.log(msg)
+        })
+
+
+        socket.on('game:start', (gameId) => {
+
         })
 
         // socket.on('', (socket: any) => {
