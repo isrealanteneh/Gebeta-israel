@@ -1,170 +1,178 @@
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap");
 
 :root {
-    --whiteColor: #ffffff;
-    --blackColor: #000000;
-    --accentColor: #633403;
-    --disabledAccentColor: #c79e75;
-    --errorColor: #c82d2d;
-    --defaultBtnPadding: 0.5rem 1rem;
-    --borderShadow: rgba(99, 53, 3, 0.25) 0px 6px 12px -2px, rgba(99, 53, 3, 0.3) 0px 3px 7px -3px;
-    --listItemBorderShadow: rgba(33, 35, 38, 0.1) 0px 10px 10px -10px;
+  --whiteColor: #ffffff;
+  --blackColor: #000000;
+  --accentColor: #633403;
+  --diabledAccentColor: #c79e75;
+  --errorColor: #c82d2d;
+  --defaultBtnPadding: 0.5rem 1rem;
+  --borderShadow: rgba(99, 53, 3, 0.25) 0px 6px 12px -2px,
+    rgba(99, 53, 3, 0.3) 0px 3px 7px -3px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 /* basic reset for padding and margin  */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 /* Font definition based on weights */
 
 .open-sans-300 {
-    font-family: "Open Sans", serif;
-    font-optical-sizing: auto;
-    font-weight: 300;
-    font-style: normal;
-    font-variation-settings:
-        "wdth" 100;
+  font-family: "Open Sans", serif;
+  font-optical-sizing: auto;
+  font-weight: 300;
+  font-style: normal;
+  font-variation-settings: "wdth" 100;
 }
 
 .open-sans-400 {
-    font-family: "Open Sans", serif;
-    font-optical-sizing: auto;
-    font-weight: 400;
-    font-style: normal;
-    font-variation-settings:
-        "wdth" 100;
+  font-family: "Open Sans", serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings: "wdth" 100;
 }
 
 .open-sans-500 {
-    font-family: "Open Sans", serif;
-    font-optical-sizing: auto;
-    font-weight: 500;
-    font-style: normal;
-    font-variation-settings:
-        "wdth" 100;
+  font-family: "Open Sans", serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+  font-variation-settings: "wdth" 100;
 }
 
 .open-sans-600 {
-    font-family: "Open Sans", serif;
-    font-optical-sizing: auto;
-    font-weight: 600;
-    font-style: normal;
-    font-variation-settings:
-        "wdth" 100;
+  font-family: "Open Sans", serif;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-style: normal;
+  font-variation-settings: "wdth" 100;
 }
 
 .open-sans-700 {
-    font-family: "Open Sans", serif;
-    font-optical-sizing: auto;
-    font-weight: 700;
-    font-style: normal;
-    font-variation-settings:
-        "wdth" 100;
+  font-family: "Open Sans", serif;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: normal;
+  font-variation-settings: "wdth" 100;
 }
 
 .open-sans-800 {
-    font-family: "Open Sans", serif;
-    font-optical-sizing: auto;
-    font-weight: 800;
-    font-style: normal;
-    font-variation-settings:
-        "wdth" 100;
+  font-family: "Open Sans", serif;
+  font-optical-sizing: auto;
+  font-weight: 800;
+  font-style: normal;
+  font-variation-settings: "wdth" 100;
 }
 
 /* Common components like button, link and input area */
 
 .btn-disabled,
-.btn-1 {
-    background-color: var(--accentColor);
-    color: var(--whiteColor);
-    padding: var(--defaultBtnPadding);
-    border-radius: .3rem;
-    border: 2px solid var(--accentColor);
-    cursor: pointer;
+.btn {
+  background-color: var(--accentColor);
+  color: var(--whiteColor);
+  padding: var(--defaultBtnPadding);
+  border-radius: 0.3rem;
+  border: 2px solid var(--accentColor);
+  cursor: pointer;
+}
+
+.btn-2 {
+  background-image: url("../asset/btn2-border.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  color: var(--blockColor);
+  border: none;
+  padding: 15px;
+  background-color: var(--whiteColor);
+}
+.btn-3 {
+  background-image: url("../asset/btn2-border.svg");
+  background-size: contain;
+  margin: 10px;
+  background-repeat: no-repeat;
+  background-position: center;
+
+  padding: 10px;
+  object-fit: contain;
+  border: none;
 }
 
 .btn-disabled {
-    background-color: var(--disabledAccentColor);
-    border: 2px solid var(--disabledAccentColor);
+  background-color: var(--diabledAccentColor);
+  border: 2px solid var(--diabledAccentColor);
 }
 
-
 .input-1 {
-    padding: var(--defaultBtnPadding);
-    border-radius: .3rem;
-    border: 2px solid var(--accentColor);
+  padding: var(--defaultBtnPadding);
+  border-radius: 0.3rem;
+  border: 2px solid var(--accentColor);
 }
 
 .input-1:focus,
 .input-1:hover {
-    padding: var(--defaultBtnPadding);
-    border-radius: .3rem;
-    border: 2px solid var(--disabledAccentColor);
-    outline-color: var(--disabledAccentColor);
+  padding: var(--defaultBtnPadding);
+  border-radius: 0.3rem;
+  border: 2px solid var(--diabledAccentColor);
+  outline-color: var(--diabledAccentColor);
 }
 
 .link-1 {
-    color: var(--accentColor);
+  color: var(--accentColor);
 }
 
 .link-2 {
-    text-decoration: none;
-    color: var(--blackColor);
+  text-decoration: none;
+  color: var(--blackColor);
 }
 
 .link-2::after {
-    content: '';
-    display: block;
-    width: 0%;
-    height: 0.15rem;
-    background-color: var(--blackColor);
-    transition: 0.25s ease-in-out;
+  content: "";
+  display: block;
+  width: 0%;
+  height: 0.15rem;
+  background-color: var(--blackColor);
+  transition: 0.25s ease-in-out;
 }
 
 .link-2:hover::after {
-    content: '';
-    display: block;
-    height: 0.15rem;
-    width: 100%;
-    background-color: var(--blackColor);
+  content: "";
+  display: block;
+  height: 0.15rem;
+  width: 100%;
+  background-color: var(--blackColor);
 }
 
 /* For error and warning components */
 
 .warning-txt {
-    color: var(--errorColor);
+  color: var(--errorColor);
 }
 
 .warning-input {
-    border: 2px solid var(--errorColor);
+  border: 2px solid var(--errorColor);
 }
 
-/* Common layouts */
-
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 3rem;
+/* reuse for all two columns sections */
+.two-row-sections {
+  margin: 2em 5em;
+  display: grid;
+  grid-template-columns: repeat(2, 0.5fr);
+  grid-template-rows: repeat(2, 0.5fr);
+  justify-content: center;
+  grid-column-gap: 2em;
+  grid-row-gap: 2em;
+  align-items: center;
 }
 
-.navbar .nav-links {
-    list-style: none;
-    display: flex;
-    font-size: 1.8em;
-    gap: 1.5rem;
-}
-
-/* List item component */
-
-.list-1 {
-    box-shadow: var(--listItemBorderShadow);
-}
-
-.thin-scroll {
-    scrollbar-width: thin;
-    scrollbar-color: var(--disabledAccentColor) var(--whiteColor);
-}
+/*The End of my commit*/
