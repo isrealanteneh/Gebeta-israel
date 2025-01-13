@@ -22,7 +22,8 @@
 }
 
 .profile {
-    width: 6em;
+    width: fit-content;
+    padding: .2em;
     border-radius: 0.5rem;
     display: flex;
     flex-direction: column;

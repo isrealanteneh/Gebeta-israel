@@ -1,3 +1,4 @@
+import { _DEBUG } from "./config/debug";
 import { HandEvent } from "./Hand";
 import Pit from "./Pit";
 
@@ -32,7 +33,10 @@ class EventListener {
                 const distance = Math.sqrt((dX * dX) + (dY * dY))
 
                 if (distance <= pitDim.rad) {
+
+                    // if (_DEBUG) console.log(`Pit ${pit.whichPit()} bt: ${pit.getStones().length}`);
                     this.cbFunc(pit);
+                    // if (_DEBUG) console.log(`Pit ${pit.whichPit()} at: ${pit.getStones().length}`);
                     break;
                 }
             } else {

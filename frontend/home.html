@@ -270,7 +270,7 @@
                                 <li>{{activePlayer.isActive ? "Active" : "Inactive"}}</li>
                             </div>
                             <div class="call-to-action">
-                                <button class="btn" @click="challengePlayer(activePlayer.id)">Challenge</button>
+                                <button class="btn" @click="challengePlayer(activePlayer.id, $event)">Challenge</button>
                             </div>
                         </div>
                     </div>
@@ -314,9 +314,12 @@
                     <div class="avatar">
                         <img src="./src/asset/user-profile-avatar-icon.svg" alt="" srcset="">
                     </div>
-                    <div class="profile open-sans-500">
-                        <span>James Jani</span>
-                        <span>@James</span>
+                    <div class="profile open-sans-500"
+                        :class="{'profile-active' : state.user.id !== state.game.gameStatus.turn}">
+                        <span>{{ (state.game.challengee.id === state.user.id) ? state.game.challenger.name :
+                            state.game.challengee.name }}</span>
+                        <span>{{(state.game.challengee.id === state.user.id) ? state.game.challenger.username :
+                            state.game.challengee.username}}</span>
                     </div>
                 </div>
                 <canvas id="canv"></canvas>
@@ -324,9 +327,12 @@
                     <div class="avatar">
                         <img src="./src/asset/user-profile-avatar-icon.svg" alt="" srcset="">
                     </div>
-                    <div class="profile open-sans-500">
-                        <span>James Jani</span>
-                        <span>@James</span>
+                    <div class="profile open-sans-500"
+                        :class="{'profile-active' : state.user.id === state.game.gameStatus.turn}">
+                        <span>{{ (state.game.challengee.id === state.user.id) ? state.game.challengee.name :
+                            state.game.challenger.name }}</span>
+                        <span>{{(state.game.challengee.id === state.user.id) ? state.game.challengee.username :
+                            state.game.challenger.username}}</span>
                     </div>
                 </div>
                 {{showGameView()}}

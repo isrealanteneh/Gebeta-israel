@@ -41,7 +41,8 @@ const home = (ioServer: Server) => {
                         id: challengee.id,
                         username: challengee.username,
                         name: challengee.name
-                    }
+                    },
+                    gameMode: msg.gameMode
                 });
             } else {
                 socket.emit('challenge:faild', {
@@ -80,6 +81,7 @@ const home = (ioServer: Server) => {
                     gameId: game.id,
                     challenger: msg.challenger,
                     challengee: msg.challengee,
+                    gameMode: msg.gameMode,
                     gameStatus: {
                         turn: msg.challenger.id,
                         move: null,

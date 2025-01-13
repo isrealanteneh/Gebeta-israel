@@ -1,3 +1,4 @@
+import { GameModeType } from "../game/mode/ModeFactory";
 import { reactive } from "../libs/petite-vue.es";
 import { Player, Tournament } from "./ActiveEntities";
 
@@ -9,6 +10,45 @@ let state = reactive({
         name: "Unknown",
         id: "no-id",
         username: "@unknown"
+    },
+
+    game: {
+        gameId: "",
+        challenger: {
+            id: "",
+            name: "",
+            username: ""
+        },
+        challengee: {
+            id: "",
+            name: "",
+            username: ""
+        },
+        gameMode: GameModeType.LM,
+        gameStatus: {
+            turn: "",
+            move: -1,
+        }
+    },
+
+    setGame(game: {
+        gameId: string,
+        challenger: {
+            id: string,
+            name: string,
+            username: string
+        },
+        challengee: {
+            id: string,
+            name: string,
+            username: string
+        },
+        gameStatus: {
+            turn: string,
+            move: number
+        }
+    }) {
+        this.game = game;
     },
 
     setUser(

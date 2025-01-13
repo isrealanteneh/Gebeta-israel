@@ -39,7 +39,7 @@ const desktopConfig = {
         dHeight: 95
     },
 
-    pit1Dimention: [{
+    pitsDimention: [{
         dX: 241,
         dY: 250.5,
     },

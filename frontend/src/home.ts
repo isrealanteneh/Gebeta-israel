@@ -10,9 +10,11 @@ import { getUserInfo } from './utils/user';
 import { setupSocketHandlers } from './utils/HandleSocket';
 import { handleUnauthorizedError } from './utils/HandleUnauthorizedError';
 import { Player } from './utils/ActiveEntities';
+import { ChallengeMenu } from './components/ChallengeMenu';
 import { Notification } from './components/NotifyFaildProcess';
 
 let App: any = null;
+const appContainer = document.querySelector('#app') as HTMLDivElement;
 
 function viewProfile(userId: string) {
     console.log(userId);
@@ -39,15 +41,52 @@ async function populateActiveEntities(accessToken: string) {
     }
 }
 
-function challengePlayer(playerId: string) {
-    socketClient.emit('challenge', {
-        challenger: state.user,
-        challengee: {
-            id: playerId
-        }
-    })
-}
+function challengePlayer(playerId: string, event: any) {
+    const challengee = state.players.find((player: Player) => player.id === playerId);
+    event.target?.setAttribute('disabled', 'true');
+    event.target?.classList.add('btn-disabled');
 
+    if (challengee) {
+        const challengeMenu = ChallengeMenu({
+            title: 'Challenge Menu',
+            challengee: {
+                id: challengee.id,
+                username: challengee.username,
+                name: challengee.name
+            },
+            challenger: {
+                id: state.user.id,
+                username: state.user.username,
+                name: state.user.name
+            },
+            onContinue: (gameMode) => {
+                console.log(gameMode);
+
+                socketClient.emit('challenge', {
+                    challenger: state.user,
+                    challengee: {
+                        id: playerId
+                    },
+                    gameMode
+                });
+
+                challengeMenu.remove();
+                event.target?.removeAttribute('disabled');
+                event.target?.classList.remove('btn-disabled');
+            },
+            onCancel: () => {
+                challengeMenu.remove();
+                event.target?.removeAttribute('disabled');
+                event.target?.classList.remove('btn-disabled');
+                console.log('Cancel');
+            }
+        });
+
+        appContainer.appendChild(challengeMenu);
+    } else {
+        Notification('Error', 'Player not found in active player list.', appContainer);
+    }
+}
 
 const accessToken = sessionStorage.getItem('accessToken');
 
@@ -57,8 +96,6 @@ if (!accessToken) {
         window.location.href = 'login.html';
     }
 }
-
-const appContainer = document.querySelector('#app') as HTMLDivElement;
 
 setupSocketHandlers(socketClient, appContainer);
 
@@ -72,7 +109,6 @@ if (userInfo) {
     Notification("User Info Error", "Error while loading user info. Deserialized user info not found.", appContainer);
 }
 
-
 App = createApp({
     challengePlayer,
     viewProfile,
@@ -82,7 +118,7 @@ App = createApp({
             console.log("Game view is already active");
             this.$nextTick(() => {
                 console.log(document.querySelector('#canv'))
-                initGebeta(document.querySelector('#canv') as HTMLCanvasElement,);
+                initGebeta(document.querySelector('#canv') as HTMLCanvasElement, this.state.game.gameMode);
             });
         }
     }

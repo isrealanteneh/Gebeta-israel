@@ -1,9 +1,21 @@
+import { HAND_MOVE_SPEED, ROW_ONE_Y_DIFF, ROW_TWO_Y_DIFF } from "./config/constants";
+import { desktopConfig } from "./config/dimentions";
+import EventListener from "./EventListener";
+import Pit from "./Pit";
 import { ImageDimention } from "./TypeDef";
 
 class Hand {
     private ctx: CanvasRenderingContext2D | null
     private handImg: HTMLImageElement
-    private dimention: ImageDimention | undefined;
+    dimention: ImageDimention = { ...desktopConfig.handDimention };
+
+    moveHand: boolean = false;
+    sPit: Pit = null as any;
+    dPit: Pit = null as any;
+    cycles: number = 0;
+    currentCycle: number = 0;
+    overPit: Pit = null as any;
+    totalSteps: number = 0;
 
     constructor(ctx: CanvasRenderingContext2D | null, handImg: HTMLImageElement) {
         this.ctx = ctx;
@@ -26,28 +38,43 @@ class Hand {
         this.dimention = { ...dimentions }
     }
 
-    move() {
-        // if (handDimention.dX <= desktopConfig.pit1Dimention[5].dX && !flopFlip) {
-        // 	if (handDimention.dX >= desktopConfig.pit1Dimention[5].dX) flopFlip = false;
-        // 	handDimention.dX += 8;
-        // } else {
-        // 	console.log(handDimention.dX, desktopConfig.pit1Dimention[0].dX)
-        // 	if (handDimention.dX <= desktopConfig.pit1Dimention[0].dX) flopFlip = true;
-        // 	handDimention.dX -= 8;
-        // }
+    private calculateHandMovement() {
+        let moveByPxl = { x: HAND_MOVE_SPEED, y: 0, height: 0, width: 0 };
 
+        if (this.dimention.dX <= desktopConfig.pitsDimention[11].dX && this.dimention.dY == desktopConfig.pitsDimention[11].dY) {
+            moveByPxl.x = 0;
+            moveByPxl.y = ROW_ONE_Y_DIFF;
+            this.currentCycle += 1;
+        } else if (this.dimention.dX >= desktopConfig.pitsDimention[5].dX && this.dimention.dY == desktopConfig.pitsDimention[5].dY) {
+            moveByPxl.x = 0;
+            moveByPxl.y = ROW_TWO_Y_DIFF;
+        } else if (this.dimention.dY <= desktopConfig.pitsDimention[6].dY) {
+            moveByPxl.x = -HAND_MOVE_SPEED;
+            moveByPxl.y = 0;
+        }
 
-        // if (handDimention.dWidth <= 100 && !flipFlop) {
-        // 	if (handDimention.dWidth === 100) flipFlop = true;
-        // 	handDimention.dWidth += 5;
-        // 	handDimention.dHeight += 5;
-        // } else {
-        // 	// console.log(handDimention.dWidth <= 100 && !flipFlop)
+        return moveByPxl;
+    }
 
-        // 	if (handDimention.dWidth === 60) flipFlop = false;
-        // 	handDimention.dWidth -= 5;
-        // 	handDimention.dHeight -= 5;
-        // }
+    public update(handEventListener: EventListener) {
+        if (this.moveHand) {
+            if (!this.dPit) return;
+
+            let moveByPxl = this.calculateHandMovement();
+            this.dimention.dX += moveByPxl.x;
+            this.dimention.dY += moveByPxl.y;
+            this.dimention.dWidth += moveByPxl.width;
+            this.dimention.dHeight += moveByPxl.height;
+
+            handEventListener.eventCallback({
+                clientX: this.dimention.dX,
+                clientY: this.dimention.dY
+            } as HandEvent);
+
+            this.draw(this.dimention);
+        }
+
+        this.moveHand = !(this.totalSteps === 0);
     }
 
     getDimention() {
@@ -61,5 +88,9 @@ interface HandEvent {
     clientY: number
 }
 
-export type { HandEvent }
+interface TakeFunction {
+    (pitStones: number): number
+}
+
+export type { HandEvent, TakeFunction }
 export { Hand }

@@ -1,3 +1,3 @@
-const _DEBUG = false
+const _DEBUG = true
 
 export { _DEBUG }

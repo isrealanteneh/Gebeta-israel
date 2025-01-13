@@ -23,7 +23,7 @@ export function setupSocketHandlers(socketClient: Socket, appContainer: HTMLDivE
     });
 
     socketClient.on('challenge:incoming', (challenge: any) => {
-        IncomingRequest("Incoming Challenge", `<b>${challenge.challenger.name}</b> has challenged you to a game.`, appContainer,
+        IncomingRequest("Incoming Challenge", `<b>${challenge.challenger.name}</b> has challenged you to ${challenge.gameMode} game.`, appContainer,
             () => {
                 socketClient.emit('challenge:accepted', challenge);
             },
@@ -33,8 +33,9 @@ export function setupSocketHandlers(socketClient: Socket, appContainer: HTMLDivE
     });
 
     socketClient.on('game:start', (game: any) => {
-        console.log(game)
+        state.setGame(game);
         state.setPage('game');
+        console.log("Game Started", state.game);
     });
 
     socketClient.on('disconnect', (reason, desc) => console.log("reason", reason, "desc", desc));

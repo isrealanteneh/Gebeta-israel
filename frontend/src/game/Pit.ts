@@ -23,6 +23,36 @@ class Pit {
         this.dimention = { ...dimentions };
     }
 
+    drawError() {
+        if (this.ctx !== null && this.dimention) {
+            this.ctx.strokeStyle = '#c82d2d';
+            this.ctx.beginPath();
+            this.ctx.arc(this.dimention.dX, this.dimention.dY, this.dimention.rad, this.dimention.startingAngle, this.dimention.endingAngle, this.dimention.cCw);
+            this.ctx.lineWidth = 5;
+            this.ctx.stroke();
+        }
+    }
+
+    drawCoution() {
+        if (this.ctx !== null && this.dimention) {
+            this.ctx.strokeStyle = 'orange';
+            this.ctx.beginPath();
+            this.ctx.arc(this.dimention.dX, this.dimention.dY, this.dimention.rad, this.dimention.startingAngle, this.dimention.endingAngle, this.dimention.cCw);
+            this.ctx.lineWidth = 5;
+            this.ctx.stroke();
+        }
+    }
+
+    drawGo() {
+        if (this.ctx !== null && this.dimention) {
+            this.ctx.strokeStyle = '#19b435';
+            this.ctx.beginPath();
+            this.ctx.arc(this.dimention.dX, this.dimention.dY, this.dimention.rad, this.dimention.startingAngle, this.dimention.endingAngle, this.dimention.cCw);
+            this.ctx.lineWidth = 5;
+            this.ctx.stroke();
+        }
+    }
+
     getDimention(): CircleDimention {
         return this.dimention;
     }

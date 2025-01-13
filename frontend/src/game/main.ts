@@ -3,16 +3,17 @@ import { loadMultiple } from './asset-loader'
 import { _DEBUG } from './config/debug';
 import { desktopConfig } from './config/dimentions';
 import Gebeta from './Gebeta';
+import ModeFactory, { GameModeType } from './mode/ModeFactory';
 import './style.css'
 
-export async function initGebeta(canv: HTMLCanvasElement) {
-	// const canv = document.getElementById("canv") as HTMLCanvasElement;
+export async function initGebeta(canv: HTMLCanvasElement, gameModeType: GameModeType) {
+	console.log(gameModeType);
 	canv.width = desktopConfig.boardDimention.dWidth
 	canv.height = desktopConfig.boardDimention.dHeight
 
 	const ctx = canv.getContext("2d");
 
-	if (_DEBUG) canv.setAttribute('style', 'border: 2px solid lightgray; cursor: pointer;');
+	if (_DEBUG) canv.setAttribute('style', 'border: 2px solid red; cursor: pointer;');
 
 	try {
 		if (ctx === null) {
@@ -26,10 +27,9 @@ export async function initGebeta(canv: HTMLCanvasElement) {
 		spinner.remove();
 
 		const gebeta = new Gebeta(canv, ctx, assets);
-		gebeta.start();
-		// gebeta.update(Date.now());
-
-		requestAnimationFrame(gebeta.update.bind(gebeta))
+		const gameMode = ModeFactory.create(gameModeType, gebeta);
+		gameMode.start();
+		gameMode.update();
 
 	} catch (error) {
 		console.error(error)
