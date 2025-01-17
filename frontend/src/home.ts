@@ -12,6 +12,7 @@ import { handleUnauthorizedError } from './utils/HandleUnauthorizedError';
 import { Player } from './utils/ActiveEntities';
 import { ChallengeMenu } from './components/ChallengeMenu';
 import { Notification } from './components/NotifyFaildProcess';
+import { Notification as SuccessNotification } from './components/NotifySuccessProcess';
 
 let App: any = null;
 const appContainer = document.querySelector('#app') as HTMLDivElement;
@@ -73,6 +74,7 @@ function challengePlayer(playerId: string, event: any) {
                 challengeMenu.remove();
                 event.target?.removeAttribute('disabled');
                 event.target?.classList.remove('btn-disabled');
+                SuccessNotification('Request Successfully sent!', `Your request to ${challengee.name} was sent successfully!`, appContainer);
             },
             onCancel: () => {
                 challengeMenu.remove();
