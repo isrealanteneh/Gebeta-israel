@@ -2,11 +2,11 @@ import { Board } from "./Board";
 import { FRAME_RATE } from "./config/constants";
 import { desktopConfig } from "./config/dimentions";
 import EventListener from "./EventListener";
-import { Hand, TakeFunction } from "./Hand";
+import { Hand } from "./Hand";
 import Pit from "./Pit";
 import { Stone } from "./Stone";
 import { _DEBUG } from "./config/debug";
-import { BeforeTakeHook, LandedOnEmptyPitHook, LandedOnNonEmptyPitHook } from "./mode/Hooks";
+import { BeforeTakeHook, LandedOnEmptyPitHook, LandedOnNonEmptyPitHook, PitRepopulatedHook, TakeFunction } from "./mode/Hooks";
 
 class Gebeta {
     canv: HTMLCanvasElement;
@@ -23,7 +23,13 @@ class Gebeta {
     beforeTakeHook: BeforeTakeHook = (takePit: Pit) => true;
     landedOnEmptyPitHook: LandedOnEmptyPitHook = (emptyPit: Pit) => undefined;
     landedOnNonEmptyPitHook: LandedOnNonEmptyPitHook = (nonEmptyPit: Pit) => true;
+    pitRepopulatedHook: PitRepopulatedHook = () => undefined
     /* ------------- */
+
+    /* Pit control */
+    isDrawGo: boolean = false
+    drawGoList: Array<Pit> = []
+    /* ----------- */
 
     handEventListener: EventListener | undefined;
     flipFlop = false;
@@ -73,6 +79,8 @@ class Gebeta {
                 this.isAnimating = false;
                 this.hand.moveHand = false;
                 this.hand.overPit = null as any;
+                this.isDrawGo = false;
+                this.drawGoList = [];
                 return;
             }
 
@@ -82,30 +90,15 @@ class Gebeta {
                 this.hand.totalSteps -= 1;
                 this.hand.overPit.flushStones();
                 this.populatePit(this.hand.overPit, stonesInPit);
+                this.pitRepopulatedHook(this.hand.overPit);
             }
 
             if (this.hand.totalSteps === 0) {
-                // const overPit = this.hand.overPit;
                 const stonesInOverPit = this.hand.overPit.getStones().length;
-
-                // console.log("Pit number:", overPit.whichPit(), "Stones:", stonesInOverPit);
-
                 if (stonesInOverPit === 1) {
                     this.landedOnEmptyPitHook(this.hand.overPit);
                 } else if (stonesInOverPit > 1) {
                     if (this.landedOnNonEmptyPitHook(this.hand.overPit) === true) {
-
-                        // const clonedOverPit = Object.create(Object.getPrototypeOf(this.hand.overPit));
-                        // Object.assign(clonedOverPit, this.hand.overPit);
-
-                        // this.hand.moveHand = false;
-                        // this.isAnimating = false;
-                        // this.hand.overPit = null as any;
-
-                        // this.handEventListener?.eventCallback({
-                        //     clientX: this.hand.overPit.getDimention().dX,
-                        //     clientY: this.hand.overPit.getDimention().dY
-                        // });
                         this.animateHand(this.hand.overPit);
                     }
                 }
@@ -198,6 +191,11 @@ class Gebeta {
             this.ctx.clearRect(0, 0, this.canv.width, this.canv.height);
             this.board.draw();
             this.updatePits();
+            if (this.isDrawGo) {
+                this.drawGoList.forEach(pit => {
+                    pit.drawGo()
+                })
+            }
             this.hand.update(this.handEventListener as EventListener);
             this.lastTimeStamp = timeStamp;
         }
@@ -218,7 +216,7 @@ class Gebeta {
         if (_DEBUG) console.log('stop()');
     }
 
-    private animateHand(sPit: Pit) {
+    public animateHand(sPit: Pit) {
         if (this.isAnimating) return;
 
         this.isAnimating = true;

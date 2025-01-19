@@ -1,9 +1,13 @@
 import SpinnerFullScreen from '../components/SpinnerFullScreen';
+import state from '../utils/StateManagement';
 import { loadMultiple } from './asset-loader'
 import { _DEBUG } from './config/debug';
 import { desktopConfig } from './config/dimentions';
 import Gebeta from './Gebeta';
+import { GameState } from './mode/Mode';
 import ModeFactory, { GameModeType } from './mode/ModeFactory';
+import GebetaGame from './store/gebetaObjStore';
+
 import './style.css'
 
 export async function initGebeta(canv: HTMLCanvasElement, gameModeType: GameModeType) {
@@ -28,8 +32,20 @@ export async function initGebeta(canv: HTMLCanvasElement, gameModeType: GameMode
 
 		const gebeta = new Gebeta(canv, ctx, assets);
 		const gameMode = ModeFactory.create(gameModeType, gebeta);
+
+		const gameState = { ...state.game } as GameState;
+		gameState.challengee.cupture = 0;
+		gameState.challenger.cupture = 0;
+		gameState.gameStatus.move = [];
+
+		gameMode.setGameState(gameState);
+		gameMode.setPlayer({ ...state.user });
 		gameMode.start();
 		gameMode.update();
+
+		const gameStore = GebetaGame.getInstance()
+		gameStore.setGebeta(gebeta);
+		gameStore.setGameMode(gameMode);
 
 	} catch (error) {
 		console.error(error)

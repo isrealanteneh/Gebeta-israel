@@ -1,11 +1,24 @@
 import { Player } from "./Player";
 
 interface IGame {
-    gameId: string;
-    players: Array<Player>;
-    winner: Player | null;
-    moves: Array<string>;
-    status: string;
+    challenger: {
+        id: string,
+        username: string,
+        name: string,
+        cupture: number
+    },
+    challengee: {
+        id: string,
+        username: string,
+        name: string,
+        cupture: number
+    },
+    status: string,
+    moves: Array<number>,
+    winner: {
+        id: string,
+        score: number
+    }
 }
 
 export type { IGame };

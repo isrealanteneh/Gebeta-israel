@@ -12,4 +12,12 @@ interface LandedOnNonEmptyPitHook {
     (nonEmptyPit: Pit): boolean
 }
 
-export type { BeforeTakeHook, LandedOnEmptyPitHook, LandedOnNonEmptyPitHook }
+interface TakeFunction {
+    (pitStones: number): number
+}
+
+interface PitRepopulatedHook {
+    (repopulatedPit: Pit): void
+}
+
+export type { BeforeTakeHook, LandedOnEmptyPitHook, LandedOnNonEmptyPitHook, TakeFunction, PitRepopulatedHook }

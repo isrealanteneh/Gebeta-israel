@@ -88,9 +88,5 @@ interface HandEvent {
     clientY: number
 }
 
-interface TakeFunction {
-    (pitStones: number): number
-}
-
-export type { HandEvent, TakeFunction }
+export type { HandEvent }
 export { Hand }

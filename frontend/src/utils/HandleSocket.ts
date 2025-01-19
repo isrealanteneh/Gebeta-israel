@@ -5,6 +5,8 @@ import state from "./StateManagement";
 import { handleUnauthorizedError } from "./HandleUnauthorizedError";
 import { Notification } from "../components/NotifyFaildProcess";
 import { IncomingRequest } from "../components/IncomingReq";
+import GebetaGame from "../game/store/gebetaObjStore";
+import { GameState } from "../game/mode/Mode";
 
 export function setupSocketHandlers(socketClient: Socket, appContainer: HTMLDivElement) {
     socketClient.on('user-went-offline', (playerId: string) => {
@@ -22,6 +24,11 @@ export function setupSocketHandlers(socketClient: Socket, appContainer: HTMLDivE
         Notification("Request Failed!", `${reason.msg} <br> Request to ${faildReqToPlayer.name} failed.`, appContainer);
     });
 
+    socketClient.on('challenge:rejected', (reason: { challenge: any, msg: string }) => {
+        const faildReqToPlayer = reason.challenge.challengee;
+        Notification("Challenge Rejected!", `${reason.msg} <br> Request to ${faildReqToPlayer.name} failed.`, appContainer);
+    });
+
     socketClient.on('challenge:incoming', (challenge: any) => {
         IncomingRequest("Incoming Challenge", `<b>${challenge.challenger.name}</b> has challenged you to ${challenge.gameMode} game.`, appContainer,
             () => {
@@ -37,6 +44,50 @@ export function setupSocketHandlers(socketClient: Socket, appContainer: HTMLDivE
         state.setPage('game');
         console.log("Game Started", state.game);
     });
+
+    socketClient.on('player:move', (gameState: GameState) => {
+        const gabetaGame = GebetaGame.getInstance();
+        const gebeta = gabetaGame.getGebeta();
+
+        if (gebeta !== undefined) {
+            const lastMove = gameState.gameStatus.move.pop()
+
+            if (lastMove !== undefined) {
+                const whichPit = gebeta.pits[lastMove];
+                if (whichPit === undefined) {
+                    //error shows up
+                } else {
+                    let localGameState = GebetaGame.getInstance().getGameMode()?.gameState;
+
+                    if (localGameState) {
+                        localGameState = { ...gameState };
+                        localGameState.gameStatus.move.push(lastMove);
+                    }
+
+                    gebeta.animateHand(whichPit);
+                }
+            } else {
+                //No move
+            }
+        }
+    })
+
+    socketClient.on('player:captured', (gameStatusAndCaptured: GameState & { capturedPit: { capturedPit: number } }) => {
+        const gebetaGameStore = GebetaGame.getInstance();
+        const gebetaGame = gebetaGameStore.getGebeta()
+        const gameMode = gebetaGameStore.getGameMode();
+
+        if (gebetaGame) {
+            console.log("Cuptured pit no:", gameStatusAndCaptured.capturedPit.capturedPit);
+            const capPit = gebetaGame.pits[gameStatusAndCaptured.capturedPit.capturedPit]
+            console.log(capPit);
+            capPit.flushStones()
+        }
+
+        if (gameMode) {
+            gameMode.gameState = gameStatusAndCaptured;
+        }
+    })
 
     socketClient.on('disconnect', (reason, desc) => console.log("reason", reason, "desc", desc));
 

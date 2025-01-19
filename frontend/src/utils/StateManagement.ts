@@ -27,7 +27,7 @@ let state = reactive({
         gameMode: GameModeType.LM,
         gameStatus: {
             turn: "",
-            move: -1,
+            move: Array<number>(),
         }
     },
 
@@ -45,7 +45,7 @@ let state = reactive({
         },
         gameStatus: {
             turn: string,
-            move: number
+            move: number[]
         }
     }) {
         this.game = game;
