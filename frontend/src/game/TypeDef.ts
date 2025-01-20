@@ -18,8 +18,4 @@ interface CircleDimention {
     cCw: boolean
 }
 
-interface TakeFunction {
-    (pitStones: number): number
-}
-
-export type { ImageDimention, CircleDimention, TakeFunction }
+export type { ImageDimention, CircleDimention }

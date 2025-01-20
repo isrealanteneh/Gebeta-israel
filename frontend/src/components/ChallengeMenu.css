@@ -1,0 +1,85 @@
+.challenge-menu-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 400px;
+    padding: 1.5rem;
+    background-color: var(--whiteColor);
+    border-radius: 8px;
+    box-shadow: var(--borderShadow);
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    row-gap: 1rem;
+}
+
+.challenge-menu-container .title {
+    font-size: 1.5rem;
+    color: var(--accentColor);
+    text-align: center;
+}
+
+.challenge-menu-container .description {
+    font-size: 1rem;
+    color: var(--blackColor);
+    width: 100%;
+}
+
+.challenge-menu-container .description legend {
+    font-weight: 400;
+    color: var(--accentColor);
+}
+
+.challenge-menu-container .description div {
+    padding: .5em;
+    text-align: center;
+    color: var(--accentColor);
+}
+
+.challenge-menu-container .game-mode-dropdown {
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 1rem;
+    color: var(--blackColor);
+    background-color: var(--whiteColor);
+    border: 1px solid var(--accentColor);
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.challenge-menu-container .button-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.challenge-menu-container .btn {
+    padding: var(--defaultBtnPadding);
+    font-size: 1rem;
+    color: var(--whiteColor);
+    background-color: var(--accentColor);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.challenge-menu-container .btn-primary {
+    background-color: var(--successColor);
+}
+
+.challenge-menu-container .btn-secondary {
+    background-color: var(--errorColor);
+}
+
+.challenge-menu-container .btn:hover {
+    background-color: var(--disabledAccentColor);
+}
+
+.challenge-menu-container .btn:active {
+    background-color: var(--accentColor);
+}

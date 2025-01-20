@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <!-- <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self' data: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:; connect-src 'self' http://localhost:2000 ws://localhost:2000;"> -->
+
+    <!-- <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self' data: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:; connect-src 'self' https://crazy-mvp.onrender.com ws://crazy-mvp.onrender.com;"> -->
+    <!-- <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self' data: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;"> -->
+    <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
+    <title>Reset Password - Gebeta (ገበጣ)</title>
+  <script type="module" crossorigin src="/assets/js/reset.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/js/style.global.js">
+  <link rel="modulepreload" crossorigin href="/assets/js/Verification.js">
+  <link rel="modulepreload" crossorigin href="/assets/js/SpinnerFullScreen.js">
+  <link rel="stylesheet" crossorigin href="/assets/style.css">
+  <link rel="stylesheet" crossorigin href="/assets/Verification.css">
+  <link rel="stylesheet" crossorigin href="/assets/SpinnerFullScreen.css">
+</head>
+
+<body>
+    <div class="app" id="app">
+        <div class="container">
+            <h2 class="container-title open-sans-500">
+                Reset Password
+            </h2>
+            <p id="warning-txt" class="warning-txt open-sans-400"></p>
+            <input type="password" name="new-pass" placeholder="New Password" id="new-pass"
+                class="input-1 open-sans-400">
+            <input type="password" name="confirm-new-pass" placeholder="Confirm New Password" id="confirm-new-pass"
+                class="input-1 open-sans-400">
+            <input type="submit" value="Reset Password" class="btn open-sans-400" id="reset-btn">
+            <a class="open-sans-400 link-1" href="/login.html">Remembered your password? Login</a>
+        </div>
+    </div>
+</body>
+
+</html>

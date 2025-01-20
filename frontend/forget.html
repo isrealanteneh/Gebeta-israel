@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <!-- <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self' data: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:; connect-src 'self' http://localhost:2000 ws://localhost:2000;"> -->
+
+    <!-- <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self' data: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:; connect-src 'self' https://crazy-mvp.onrender.com ws://crazy-mvp.onrender.com;"> -->
+    <!-- <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self' data: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;"> -->
+    <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
+    <title>Forget Password - Gebeta (ገበጣ)</title>
+</head>
+
+<body>
+    <div class="app" id="app">
+        <div class="container">
+            <h2 class="container-title open-sans-500">
+                Forget Password
+            </h2>
+            <p id="warning-txt" class="warning-txt open-sans-400"></p>
+            <input type="email" name="email" placeholder="Email" id="email" class="input-1 open-sans-400">
+            <input type="submit" value="Send Reset Link" class="btn open-sans-400" id="forget-btn">
+            <a class="open-sans-400 link-1" href="/login">Remembered your password? Login</a>
+        </div>
+    </div>
+    <script type="module" src="./src/forget.ts"></script>
+</body>
+
+</html>

@@ -19,25 +19,25 @@
                     <img src="./src/asset/Logo.svg" />
                 </div>
                 <div class="tab-container">
-                    <a href="#home-sec" class="tab open-sans-300" id="home" @click="active.page='home'"><img
+                    <a href="#home-sec" class="tab open-sans-300" id="home" @click="state.page='home'"><img
                             src="./src/asset/home-1.svg" /></a>
-                    <a href="#search" class="tab open-sans-300" id="search" @click="active.page='search'"><img
+                    <a href="#search" class="tab open-sans-300" id="search" @click="state.page='search'"><img
                             src="./src/asset/search-1.svg" /></a>
                     <a href="#active-players" class="tab open-sans-300" id="game"
-                        @click="active.page='active-players'"><img src="./src/asset/game-1.svg" /></a>
+                        @click="state.page='active-players'"><img src="./src/asset/game-1.svg" /></a>
                     <a href="#active-tournaments" class="tab open-sans-300" id="hunter"
-                        @click="active.page='active-tournaments'"><img src="./src/asset/hunter-1.svg" /></a>
+                        @click="state.page='active-tournaments'"><img src="./src/asset/hunter-1.svg" /></a>
                 </div>
             </nav>
         </div>
 
         <div class="main-section" id="main-section">
-            <div v-if="active.page === 'home'" class="section home-section">
+            <div v-if="state.page === 'home'" class="section home-section">
                 <div class="section-container welcome-container">
                     <div class="section-title ">
                         <img src="./src/asset/welcome-icon.svg" alt="welcome icon" srcset="">
                         <h1 class="open-sans-500">
-                            Welcome back to Gebeta, {{ userDeserialized.info.name }}!
+                            Welcome back to Gebeta, {{ state.user.name }}!
                         </h1>
                     </div>
                     <div class="section-content profile-section-container">
@@ -47,11 +47,11 @@
                         <div class="profile-description-container open-sans-300">
                             <!-- <ul> -->
                             <h2>
-                                {{userDeserialized.info.name}}
+                                {{state.user.name}}
                             </h2>
-                            <li>@{{userDeserialized.info.username}}</li>
+                            <li>@{{state.user.username}}</li>
                             <!-- </ul> -->
-                            <button class="btn-1" @click="viewProfile(userDeserialized.info.id)">View Profile</button>
+                            <button class="btn" @click="viewProfile(state.user.id)">View Profile</button>
                         </div>
                     </div>
                 </div>
@@ -244,11 +244,11 @@
                 </div>
             </div>
 
-            <div v-if="active.page === 'search'">
+            <div v-if="state.page === 'search'">
                 {{"Search "}}
             </div>
 
-            <div v-if="active.page === 'active-players'" class="section thin-scroll">
+            <div v-if="state.page === 'active-players'" class="section thin-scroll">
                 <div class="section-container active-players">
                     <div class="section-title ">
                         <img src="./src/asset/online-icon.svg" alt="welcome icon" srcset="">
@@ -258,8 +258,8 @@
                     </div>
 
                     <div class="section-content active-players-container open-sans-300">
-                        <p v-if="active.players.length === 0">No players were found.</p>
-                        <div v-for="(activePlayer, index) in active.players" :key="index"
+                        <p v-if="state.players.length === 0">No players were found.</p>
+                        <div v-for="(activePlayer, index) in state.players" :key="index"
                             class="active-player-list list-1 open-sans-300">
                             <div class="avatar">
                                 <img src="./src/asset/user-profile-avatar-icon.svg" alt="" srcset="">
@@ -270,14 +270,14 @@
                                 <li>{{activePlayer.isActive ? "Active" : "Inactive"}}</li>
                             </div>
                             <div class="call-to-action">
-                                <button class="btn-1" @click="challengePlayer(activePlayer.id)">Challenge</button>
+                                <button class="btn" @click="challengePlayer(activePlayer.id, $event)">Challenge</button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div v-if="active.page === 'active-tournaments'" class="section">
+            <div v-if="state.page === 'active-tournaments'" class="section">
                 <div class="section-container active-tournaments">
                     <div class="section-title ">
                         <img src="./src/asset/tournaments.svg" alt="welcome icon" srcset="">
@@ -286,8 +286,8 @@
                         </h3>
                     </div>
                     <div class="section-content open-sans-300 active-tournaments-container thin-scroll">
-                        <p v-if="active.tournaments.length === 0">No tournaments were found.</p>
-                        <div v-for="(activeTournament, index) in active.tournaments" :key="index"
+                        <p v-if="state.tournaments.length === 0">No tournaments were found.</p>
+                        <div v-for="(activeTournament, index) in state.tournaments" :key="index"
                             class="tournament list-1">
                             <div class="info">
                                 <!-- Spring Championship  -->
@@ -301,7 +301,7 @@
                                 </ul>
                             </div>
                             <div class="action">
-                                <button class="btn-1">Watch</button> <button class="btn-1">Join</button>
+                                <button class="btn">Watch</button> <button class="btn">Join</button>
                             </div>
                         </div>
 
@@ -309,14 +309,17 @@
                 </div>
             </div>
 
-            <div class="canv-container" v-if="active.page === 'game'">
+            <div class="canv-container" v-if="state.page === 'game'">
                 <div class="player-container">
                     <div class="avatar">
                         <img src="./src/asset/user-profile-avatar-icon.svg" alt="" srcset="">
                     </div>
-                    <div class="profile open-sans-500">
-                        <span>James Jani</span>
-                        <span>@James</span>
+                    <div class="profile open-sans-500"
+                        :class="{'profile-active' : state.user.id !== state.game.gameStatus.turn}">
+                        <span>{{ (state.game.challengee.id === state.user.id) ? state.game.challenger.name :
+                            state.game.challengee.name }}</span>
+                        <span>{{(state.game.challengee.id === state.user.id) ? state.game.challenger.username :
+                            state.game.challengee.username}}</span>
                     </div>
                 </div>
                 <canvas id="canv"></canvas>
@@ -324,9 +327,12 @@
                     <div class="avatar">
                         <img src="./src/asset/user-profile-avatar-icon.svg" alt="" srcset="">
                     </div>
-                    <div class="profile open-sans-500">
-                        <span>James Jani</span>
-                        <span>@James</span>
+                    <div class="profile open-sans-500"
+                        :class="{'profile-active' : state.user.id === state.game.gameStatus.turn}">
+                        <span>{{ (state.game.challengee.id === state.user.id) ? state.game.challengee.name :
+                            state.game.challenger.name }}</span>
+                        <span>{{(state.game.challengee.id === state.user.id) ? state.game.challengee.username :
+                            state.game.challenger.username}}</span>
                     </div>
                 </div>
                 {{showGameView()}}

@@ -2,6 +2,7 @@ import { Server, Socket } from "socket.io";
 import { authPlayer } from "../auth/middleware/socket.io";
 import { ActiveGames, ActiveUserStore, } from "../database/inmemory";
 import GameModel from "../database/models/Game"; import { IGame } from "../game/Game";
+import { GameState } from "./ResponseModel";
 ;
 
 const home = (ioServer: Server) => {
@@ -41,7 +42,8 @@ const home = (ioServer: Server) => {
                         id: challengee.id,
                         username: challengee.username,
                         name: challengee.name
-                    }
+                    },
+                    gameMode: msg.gameMode
                 });
             } else {
                 socket.emit('challenge:faild', {
@@ -55,7 +57,7 @@ const home = (ioServer: Server) => {
             const activeChallenger = activeUserStore.getUser(msg.challenger.id)
             const activeChallengee = activeUserStore.getUser(msg.challengee.id)
             if (activeChallengee && activeChallenger) {
-                const game = new GameModel({
+                const gameData = {
                     challenger: {
                         id: msg.challenger.id,
                         username: msg.challenger.username,
@@ -68,24 +70,96 @@ const home = (ioServer: Server) => {
                     },
                     status: "pending",
                     moves: [],
-                    winner: null
-                });
+                    winner: null as any
+                }
+                const game = new GameModel(gameData);
 
                 await game.save();
 
                 const activeGames: ActiveGames = ActiveGames.getInstance();
-                activeGames.addGame(game.id, {} as IGame);
+                activeGames.addGame(game.id, gameData as IGame);
 
                 ioServer.to(activeChallenger.socketId).to(activeChallengee.socketId).emit('game:start', {
                     gameId: game.id,
                     challenger: msg.challenger,
-                    challengee: msg.challengee
+                    challengee: msg.challengee,
+                    gameMode: msg.gameMode,
+                    gameStatus: {
+                        turn: msg.challenger.id,
+                        move: null,
+                    }
                 });
             }
         })
 
         socket.on('challenge:rejected', (msg: any, callback: any) => {
             console.log(msg)
+        })
+
+
+        socket.on('game:start', (gameId) => {
+
+        })
+
+        socket.on('player:move', (gameState: GameState) => {
+            const activeGames = ActiveGames.getInstance();
+            const gameSession = activeGames.getGame(gameState.gameId);
+            if (gameSession != null) {
+
+                gameSession.moves.push(gameState.gameStatus.move[gameState.gameStatus.move.length - 1]);
+                if (gameSession.challenger.id === socket.user.id) {
+                    const opponent = activeUserStore.getUser(gameSession.challengee.id)
+                    if (opponent === undefined) {
+                        socket.emit('user:disconnected', gameSession.challengee);
+                    } else {
+                        socket.to(opponent.socketId).emit("player:move", { ...gameState })
+                    }
+                } else if (gameSession.challengee.id === socket.user.id) {
+                    const opponent = activeUserStore.getUser(gameSession.challenger.id)
+                    if (opponent === undefined) {
+                        socket.emit('user:disconnected', gameSession.challenger);
+                    } else {
+                        socket.to(opponent.socketId).emit("player:move", { ...gameState })
+                    }
+                }
+            } else {
+                socket.emit("game:session:error", {
+                    gameId: gameState.gameId,
+                    msg: "No game was found!"
+                })
+            }
+        })
+
+        socket.on('player:captured', (gameState: GameState, capturedPit: number, callback: (res: boolean) => void) => {
+            const activeGames = ActiveGames.getInstance();
+            const gameSession = activeGames.getGame(gameState.gameId);
+            if (gameSession != null) {
+                gameSession.challengee.cupture = gameState.challengee.cupture
+                gameSession.challenger.cupture = gameState.challenger.cupture
+
+                if (gameSession.challenger.id === socket.user.id) {
+                    const opponent = activeUserStore.getUser(gameSession.challengee.id)
+                    if (opponent === undefined) {
+                        socket.emit('user:disconnected', gameSession.challengee);
+                    } else {
+                        socket.to(opponent.socketId).emit("player:captured", { ...gameState, ...{ capturedPit } })
+                    }
+                } else if (gameSession.challengee.id === socket.user.id) {
+                    const opponent = activeUserStore.getUser(gameSession.challenger.id)
+                    if (opponent === undefined) {
+                        socket.emit('user:disconnected', gameSession.challenger);
+                    } else {
+                        socket.to(opponent.socketId).emit("player:captured", { ...gameState, ...{ capturedPit } })
+                    }
+                }
+
+                callback(true);
+            } else {
+                socket.emit("game:session:error", {
+                    gameId: gameState.gameId,
+                    msg: "No game was found!"
+                })
+            }
         })
 
         // socket.on('', (socket: any) => {

@@ -1,211 +1,127 @@
 import './css/style.global.css';
 import './css/home.css';
-import { createApp, reactive } from './libs/petite-vue.es';
-import { httpClient, socketClient } from './utils/Network';
-import { isResponseModel, Response } from './utils/ResponseModel';
-import { ActiveEntities, Player, Tournament } from './utils/ActiveEntities';
-import { refreshAccessToken } from './utils/ReusableHttpRequests';
+import { createApp } from './libs/petite-vue.es';
+import { socketClient } from './utils/Network';
+import { ActiveEntities } from './utils/ActiveEntities';
 import { AxiosError } from 'axios';
-import { Notification } from './components/NotifyFaildProcess';
-import { IncomingRequest } from './components/IncomingReq';
-import SpinnerFullScreen from './components/SpinnerFullScreen';
 import { initGebeta } from './game/main';
+import state from './utils/StateManagement';
+import { getUserInfo } from './utils/user';
+import { setupSocketHandlers } from './utils/HandleSocket';
+import { handleUnauthorizedError } from './utils/HandleUnauthorizedError';
+import { Player } from './utils/ActiveEntities';
+import { ChallengeMenu } from './components/ChallengeMenu';
+import { Notification } from './components/NotifyFaildProcess';
+import { Notification as SuccessNotification } from './components/NotifySuccessProcess';
 
 let App: any = null;
+const appContainer = document.querySelector('#app') as HTMLDivElement;
 
 function viewProfile(userId: string) {
     console.log(userId);
 }
 
-async function refreshAccessTokenOrReject(refreshToken: string) {
-    try {
-        const refreshedAccessToken = await refreshAccessToken(refreshToken);
-        if (!refreshedAccessToken) {
-            throw new Error('Failed to refresh access token');
-        }
-        sessionStorage.setItem('accessToken', refreshedAccessToken);
-    } catch {
-        sessionStorage.clear();
-        window.location.href = "/login.html";
-    }
-}
-
-async function handleUnauthorizedError(refreshToken: string) {
-    try {
-        await refreshAccessTokenOrReject(refreshToken);
-    } catch {
-        sessionStorage.clear();
-        window.location.href = "/login.html";
-    }
-}
-
-(async function main() {
-    const accessToken = sessionStorage.getItem('accessToken');
-    const refreshToken = sessionStorage.getItem('refreshToken');
-    const userInfoSerialized = sessionStorage.getItem('user');
-
-    let active = reactive({
-        page: 'home',
-        tournaments: [] as Tournament[],
-        players: [] as Player[],
-
-        setPage(page: string) {
-            this.page = page
-        },
-
-        setTournaments(tournaments: Array<Tournament>) {
-            this.tournaments = tournaments;
-        },
-
-        setPlayers(players: Array<Player>) {
-            this.players = players;
-        },
-
-        addPlayer(player: Player) {
-            this.players.push(player);
-        },
-
-        addTournamet(tournament: Tournament) {
-            this.tournaments.push(tournament);
-        },
-
-        removePlayer(id: string) {
-            this.players = this.players.filter((player: Player) => {
-                return (player.id !== id)
-            })
-        },
-
-        removeTournament(id: string) {
-            this.tournaments = this.tournaments.filter((tournament: Player) => {
-                return (tournament.id !== id)
-            })
-        }
-
-    });
-
-    if (!refreshToken) {
-        sessionStorage.clear();
-        window.location.href = "/login.html";
-        return;
-    }
-
-    if (!accessToken) {
-        await handleUnauthorizedError(refreshToken);
-    }
-
-
-    socketClient.on('connect', () => console.log('connected'));
-
-    socketClient.on('user-went-offline', (playerId: string) => {
-        active.removePlayer(playerId)
-    });
-
-    socketClient.on('user-went-online', (player: Player) => {
-        active.addPlayer(player);
-    });
-
-    socketClient.on('challenge:faild', (reason: { challenge: any, msg: string }) => {
-        try {
-            const faildReqToPlayer = active.players.find((player: Player) => player.id === reason.challenge.challengee.id)
-            const appContainer = document.querySelector('#app') as HTMLDivElement;
-            Notification("Request Failed!", `${reason.msg} <br> Request to ${faildReqToPlayer.name} failed.`, appContainer);
-        } catch (err) {
-            console.log(err)
-        }
-    })
-
-    socketClient.on('challenge:incoming', (challenge: any) => {
-        IncomingRequest("Incoming Challenge", `<b>${challenge.challenger.name}</b> has challenged you to a game.`, document.querySelector('#app') as HTMLDivElement,
-            () => {
-                socketClient.emit('challenge:accepted', challenge);
-            },
-            () => {
-                socketClient.emit('challenge:rejected', challenge);
-            });
-    });
-
-    socketClient.on('game:start', (game: any) => {
-        console.log(game);
-        active.setPage('game');
-    });
-
-    socketClient.on('disconnect', (reason, desc) => console.log("reason", reason, "desc", desc));
-
-    socketClient.on('connect_error', async (ex) => {
-        if (ex.message.includes('unauthorized')) {
-            try {
-                const res = await httpClient.post('/refresh-token', { refresh_token: refreshToken });
-                const resData = res?.data as Response;
-                if (isResponseModel(resData.result)) {
-                    const newAccessToken = resData.result?.accessToken || "";
-                    sessionStorage.setItem('accessToken', newAccessToken);
-                    socketClient.auth = { token: newAccessToken };
-                    socketClient.connect();
-                }
-            } catch (reason) {
-                console.log(reason);
-            }
-        }
-        console.log("EX,", ex);
-    });
-
-    let userDeserialized = reactive({
-        info: {
-            name: "Unknown",
-            id: "no-id",
-            username: "@unknown",
-        },
-        setInfo(
-            info: {
-                name: string,
-                id: string,
-                username: string
-            }
-        ) {
-            this.info = info
-        }
-    });
-
-
-    if (userInfoSerialized != null) {
-        userDeserialized.setInfo(JSON.parse(userInfoSerialized));
-    }
-
-    function challengePlayer(playerId: string) {
-        socketClient.emit('challenge', {
-            challenger: userDeserialized.info,
-            challengee: {
-                id: playerId
-            }
-        })
-    }
-
+async function populateActiveEntities(accessToken: string) {
     const activeEntities = new ActiveEntities(accessToken || "");
 
     try {
         const activePlayers = await activeEntities.fetchActivePlayers();
         const activeTournaments = await activeEntities.fetchActiveTournaments();
 
-        active.setPlayers(activePlayers);
-        console.log(activeTournaments)
-        active.setTournaments(activeTournaments);
+        state.setPlayers(activePlayers.filter(((player: Player) => player.id !== state.user.id)))
+        state.setTournaments(activeTournaments);
     } catch (reason: unknown) {
         if (reason instanceof AxiosError && reason.response?.data?.result?.code === 401) {
-            await handleUnauthorizedError(refreshToken);
+            const newAccessToken = await handleUnauthorizedError('Expired access token');
+            if (newAccessToken) {
+                populateActiveEntities(newAccessToken);
+            } else {
+                window.location.href = 'login.html';
+            }
         }
+    }
+}
+
+function challengePlayer(playerId: string, event: any) {
+    const challengee = state.players.find((player: Player) => player.id === playerId);
+    event.target?.setAttribute('disabled', 'true');
+    event.target?.classList.add('btn-disabled');
+
+    if (challengee) {
+        const challengeMenu = ChallengeMenu({
+            title: 'Challenge Menu',
+            challengee: {
+                id: challengee.id,
+                username: challengee.username,
+                name: challengee.name
+            },
+            challenger: {
+                id: state.user.id,
+                username: state.user.username,
+                name: state.user.name
+            },
+            onContinue: (gameMode) => {
+                console.log(gameMode);
+
+                socketClient.emit('challenge', {
+                    challenger: state.user,
+                    challengee: {
+                        id: playerId
+                    },
+                    gameMode
+                });
+
+                challengeMenu.remove();
+                event.target?.removeAttribute('disabled');
+                event.target?.classList.remove('btn-disabled');
+                SuccessNotification('Request Successfully sent!', `Your request to ${challengee.name} was sent successfully!`, appContainer);
+            },
+            onCancel: () => {
+                challengeMenu.remove();
+                event.target?.removeAttribute('disabled');
+                event.target?.classList.remove('btn-disabled');
+                console.log('Cancel');
+            }
+        });
+
+        appContainer.appendChild(challengeMenu);
+    } else {
+        Notification('Error', 'Player not found in active player list.', appContainer);
+    }
+}
+
+(async function main() {
+    const accessToken = sessionStorage.getItem('accessToken');
+
+    if (!accessToken) {
+        const newAccessToken = await handleUnauthorizedError('No access token found.');
+        if (newAccessToken === null || newAccessToken === undefined) {
+            window.location.href = 'login.html';
+        }
+    }
+
+    setupSocketHandlers(socketClient, appContainer);
+
+    socketClient.on('connect', () => console.log('connected'));
+
+    const userInfo = getUserInfo()
+    if (userInfo) {
+        state.setUser(userInfo);
+        populateActiveEntities(accessToken || '');
+    } else {
+        Notification("User Info Error", "Error while loading user info. Deserialized user info not found.", appContainer);
     }
 
     App = createApp({
         challengePlayer,
         viewProfile,
-        active,
-        userDeserialized,
+        state,
         showGameView() {
-            if (this.active.page === 'game') {
+            if (this.state.page === 'game') {
                 console.log("Game view is already active");
                 this.$nextTick(() => {
                     console.log(document.querySelector('#canv'))
-                    initGebeta(document.querySelector('#canv') as HTMLCanvasElement);
+                    initGebeta(document.querySelector('#canv') as HTMLCanvasElement, this.state.game.gameMode);
                 });
             }
         }

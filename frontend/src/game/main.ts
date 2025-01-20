@@ -1,18 +1,23 @@
 import SpinnerFullScreen from '../components/SpinnerFullScreen';
+import state from '../utils/StateManagement';
 import { loadMultiple } from './asset-loader'
 import { _DEBUG } from './config/debug';
 import { desktopConfig } from './config/dimentions';
 import Gebeta from './Gebeta';
+import { GameState } from './mode/Mode';
+import ModeFactory, { GameModeType } from './mode/ModeFactory';
+import GebetaGame from './store/gebetaObjStore';
+
 import './style.css'
 
-export async function initGebeta(canv: HTMLCanvasElement) {
-	// const canv = document.getElementById("canv") as HTMLCanvasElement;
+export async function initGebeta(canv: HTMLCanvasElement, gameModeType: GameModeType) {
+	console.log(gameModeType);
 	canv.width = desktopConfig.boardDimention.dWidth
 	canv.height = desktopConfig.boardDimention.dHeight
 
 	const ctx = canv.getContext("2d");
 
-	if (_DEBUG) canv.setAttribute('style', 'border: 2px solid lightgray; cursor: pointer;');
+	if (_DEBUG) canv.setAttribute('style', 'border: 2px solid red; cursor: pointer;');
 
 	try {
 		if (ctx === null) {
@@ -26,10 +31,21 @@ export async function initGebeta(canv: HTMLCanvasElement) {
 		spinner.remove();
 
 		const gebeta = new Gebeta(canv, ctx, assets);
-		gebeta.start();
-		// gebeta.update(Date.now());
+		const gameMode = ModeFactory.create(gameModeType, gebeta);
 
-		requestAnimationFrame(gebeta.update.bind(gebeta))
+		const gameState = { ...state.game } as GameState;
+		gameState.challengee.cupture = 0;
+		gameState.challenger.cupture = 0;
+		gameState.gameStatus.move = [];
+
+		gameMode.setGameState(gameState);
+		gameMode.setPlayer({ ...state.user });
+		gameMode.start();
+		gameMode.update();
+
+		const gameStore = GebetaGame.getInstance()
+		gameStore.setGebeta(gebeta);
+		gameStore.setGameMode(gameMode);
 
 	} catch (error) {
 		console.error(error)

@@ -57,10 +57,11 @@ try {
 
             const resData = res?.data as Response;
             if (resData) {
-                console.log(resData.result?.accessToken, resData.result?.refreshToken)
-                sessionStorage.setItem('user', JSON.stringify(resData.result?.user))
-                sessionStorage.setItem('accessToken', resData.result?.accessToken || '')
-                sessionStorage.setItem('refreshToken', resData.result?.refreshToken || '')
+                const result = resData.result as { accessToken: string, refreshToken: string, user: object };
+                console.log(result.accessToken, result.refreshToken)
+                sessionStorage.setItem('user', JSON.stringify(result.user))
+                sessionStorage.setItem('accessToken', result.accessToken || '')
+                sessionStorage.setItem('refreshToken', result.refreshToken || '')
                 window.location.href = "/home" ///" + (resData.result as { user_id: string }).user_id;
             }
         }).catch((err: AxiosError) => {
