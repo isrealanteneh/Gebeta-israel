@@ -27,6 +27,7 @@ const corsOptions = {
 
 app.set('views', [__dirname, 'views'].join(path.sep));
 app.set('view engine', 'ejs');
+app.use(express.static(path.join(__dirname, 'views')));
 app.use(cors(corsOptions))
 app.use(cookieParser());
 app.use(express.json());

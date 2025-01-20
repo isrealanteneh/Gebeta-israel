@@ -90,40 +90,42 @@ function challengePlayer(playerId: string, event: any) {
     }
 }
 
-const accessToken = sessionStorage.getItem('accessToken');
+(async function main() {
+    const accessToken = sessionStorage.getItem('accessToken');
 
-if (!accessToken) {
-    const newAccessToken = await handleUnauthorizedError('No access token found.');
-    if (newAccessToken === null || newAccessToken === undefined) {
-        window.location.href = 'login.html';
-    }
-}
-
-setupSocketHandlers(socketClient, appContainer);
-
-socketClient.on('connect', () => console.log('connected'));
-
-const userInfo = getUserInfo()
-if (userInfo) {
-    state.setUser(userInfo);
-    populateActiveEntities(accessToken || '');
-} else {
-    Notification("User Info Error", "Error while loading user info. Deserialized user info not found.", appContainer);
-}
-
-App = createApp({
-    challengePlayer,
-    viewProfile,
-    state,
-    showGameView() {
-        if (this.state.page === 'game') {
-            console.log("Game view is already active");
-            this.$nextTick(() => {
-                console.log(document.querySelector('#canv'))
-                initGebeta(document.querySelector('#canv') as HTMLCanvasElement, this.state.game.gameMode);
-            });
+    if (!accessToken) {
+        const newAccessToken = await handleUnauthorizedError('No access token found.');
+        if (newAccessToken === null || newAccessToken === undefined) {
+            window.location.href = 'login.html';
         }
     }
-});
 
-App.mount("#app");
+    setupSocketHandlers(socketClient, appContainer);
+
+    socketClient.on('connect', () => console.log('connected'));
+
+    const userInfo = getUserInfo()
+    if (userInfo) {
+        state.setUser(userInfo);
+        populateActiveEntities(accessToken || '');
+    } else {
+        Notification("User Info Error", "Error while loading user info. Deserialized user info not found.", appContainer);
+    }
+
+    App = createApp({
+        challengePlayer,
+        viewProfile,
+        state,
+        showGameView() {
+            if (this.state.page === 'game') {
+                console.log("Game view is already active");
+                this.$nextTick(() => {
+                    console.log(document.querySelector('#canv'))
+                    initGebeta(document.querySelector('#canv') as HTMLCanvasElement, this.state.game.gameMode);
+                });
+            }
+        }
+    });
+
+    App.mount("#app");
+})();

@@ -20,9 +20,9 @@ class Gebeta {
 
     /* Hooks for the different game modes */
     takeFunction: TakeFunction = (stoneCount: number) => stoneCount;
-    beforeTakeHook: BeforeTakeHook = (takePit: Pit) => true;
-    landedOnEmptyPitHook: LandedOnEmptyPitHook = (emptyPit: Pit) => undefined;
-    landedOnNonEmptyPitHook: LandedOnNonEmptyPitHook = (nonEmptyPit: Pit) => true;
+    beforeTakeHook: BeforeTakeHook = (takePit: Pit) => { takePit; return true };
+    landedOnEmptyPitHook: LandedOnEmptyPitHook = (emptyPit: Pit) => emptyPit;
+    landedOnNonEmptyPitHook: LandedOnNonEmptyPitHook = (nonEmptyPit: Pit) => { nonEmptyPit; return true };
     pitRepopulatedHook: PitRepopulatedHook = () => undefined
     /* ------------- */
 

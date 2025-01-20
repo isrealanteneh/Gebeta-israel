@@ -1,5 +1,5 @@
 import Gebeta from "../Gebeta";
-import GameMode, { GameState } from "../mode/Mode";
+import GameMode from "../mode/Mode";
 
 class GebetaGame {
     private gebeta: Gebeta | undefined

@@ -1,4 +1,4 @@
-import { Notification as FaildNotify, Notification as SuccessNotify } from "../../../components/NotifyFaildProcess";
+import { Notification as FaildNotify } from "../../../components/NotifyFaildProcess";
 import { socketClient } from "../../../utils/Network";
 import Gebeta from "../../Gebeta";
 import Pit from "../../Pit";
@@ -86,8 +86,8 @@ class LamieWeled extends GameMode {
     }
 
     private landedOnEmptyPitHook(emptyPit: Pit): void {
-        console.log('Landed On Empty Pit Hook');
-        // console.log("Pit: ", emptyPit.whichPit());
+        // console.log('Landed On Empty Pit Hook');
+        console.log("Pit: ", emptyPit.whichPit());
         // console.log("Stone Count: ", emptyPit.getStones().length);
 
         this.gebeta.isDrawGo = false;

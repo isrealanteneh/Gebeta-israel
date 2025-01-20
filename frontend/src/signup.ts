@@ -95,7 +95,7 @@ try {
 
             const resData = res?.data as Response;
             if (resData) {
-                window.location.href = "/verify/" + (resData.result as { user_id: string }).user_id;
+                window.location.href = "/verify/" + ((resData.result as unknown) as { user_id: string }).user_id;
             }
         }).catch((err: AxiosError) => {
             const resData = err.response?.data as Response;
