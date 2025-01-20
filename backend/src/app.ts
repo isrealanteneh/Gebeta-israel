@@ -10,6 +10,7 @@ import path from 'path';
 import cookieParser from 'cookie-parser';
 import playerRoute from './routes/players';
 import tournamentRoute from './routes/tournament';
+import gameRoute from './routes/game';
 
 config();
 const app = express();
@@ -35,6 +36,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use(authRoute);
 app.use(playerRoute);
 app.use(tournamentRoute);
+app.use(gameRoute);
 
 const host: string = process.env.HOST || 'localhost';
 const port: number = parseInt(process.env.PORT || '3000');

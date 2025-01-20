@@ -27,7 +27,9 @@ async function populateActiveEntities(accessToken: string) {
     try {
         const activePlayers = await activeEntities.fetchActivePlayers();
         const activeTournaments = await activeEntities.fetchActiveTournaments();
+        const gameHistory = await activeEntities.fetchGameHistory();
 
+        state.setGameHistory(gameHistory);
         state.setPlayers(activePlayers.filter(((player: Player) => player.id !== state.user.id)))
         state.setTournaments(activeTournaments);
     } catch (reason: unknown) {
@@ -90,6 +92,18 @@ function challengePlayer(playerId: string, event: any) {
     }
 }
 
+function searchActivePlayer() {
+    const searchInput = document.querySelector('#search-player') as HTMLInputElement;
+    const searchValue = searchInput.value;
+
+    if (searchValue === '') {
+        state.setSearchedPlayers([]);
+    } else {
+        const searchedPlayers = state.players.filter((player: Player) => (player.name.toLowerCase().includes(searchValue.toLowerCase())));
+        state.setSearchedPlayers(searchedPlayers);
+    }
+}
+
 (async function main() {
     const accessToken = sessionStorage.getItem('accessToken');
 
@@ -115,6 +129,7 @@ function challengePlayer(playerId: string, event: any) {
     App = createApp({
         challengePlayer,
         viewProfile,
+        searchActivePlayer,
         state,
         showGameView() {
             if (this.state.page === 'game') {
@@ -124,7 +139,7 @@ function challengePlayer(playerId: string, event: any) {
                     initGebeta(document.querySelector('#canv') as HTMLCanvasElement, this.state.game.gameMode);
                 });
             }
-        }
+        },
     });
 
     App.mount("#app");
