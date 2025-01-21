@@ -1,16 +1,12 @@
 import { AxiosError } from "axios";
 import { httpClient } from "./Network";
 import { Response } from "./ResponseModel";
+import { GameModeType } from "../game/mode/ModeFactory";
 
 interface Tournament {
     name: string, //"Spring Championship",
     startTime: string, //new Date().toLocaleString(),
     endTime: string,
-    // (() => {
-    //     let endTime = new Date()
-    //     endTime.setTime(Date.now() + 8640000 * 2)
-    //     return endTime.toLocaleString()
-    // })(),
     participantCount: number //4
 };
 
@@ -20,6 +16,23 @@ interface Player {
     name: string, //"Dawit Kebebe"
     username: string //"dawit"
 };
+
+interface Game {
+    gameId: string,
+    challenger: {
+        id: string,
+        name: string,
+        username: string,
+        cupture: number
+    },
+    challengee: {
+        id: string,
+        name: string,
+        username: string,
+        cupture: number
+    },
+    gameMode: GameModeType,
+}
 
 class ActiveEntities {
     private accessToken: string;
@@ -69,7 +82,27 @@ class ActiveEntities {
                 })
         })
     }
+
+    fetchGameHistory() {
+        return new Promise((resolve: (value: Array<Game>) => void, reject: (reason: AxiosError) => void) => {
+            httpClient.get("/game/history", {
+                headers: {
+                    Authorization: `Bearer ${this.accessToken}`
+                }
+            }).then(res => {
+                if (res.data) {
+                    const responseData = res.data as Response;
+                    const result = Array.isArray(responseData.result) ? responseData.result : [];
+                    resolve(result as Game[]);
+                } else {
+                    resolve([] as Game[]);
+                }
+            }).catch((reason: AxiosError) => {
+                reject(reason as AxiosError);
+            });
+        });
+    }
 }
 
-export type { Player, Tournament }
+export type { Player, Tournament, Game }
 export { ActiveEntities }
