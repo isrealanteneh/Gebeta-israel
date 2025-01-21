@@ -6,9 +6,10 @@ interface ViewProfileProps {
     user: { id: string, username: string, name: string };
     onLogout: () => void;
     onCancel: () => void;
+    onUpdate: () => void;
 }
 
-function ViewProfile({ user, onLogout, onCancel }: ViewProfileProps) {
+function ViewProfile({ user, onLogout, onUpdate, onCancel }: ViewProfileProps) {
     const container = document.createElement('div');
     container.classList.add('view-profile-container');
 
@@ -38,13 +39,19 @@ function ViewProfile({ user, onLogout, onCancel }: ViewProfileProps) {
     logoutButton.textContent = 'Logout';
     logoutButton.addEventListener('click', onLogout);
 
+    const updateButton = document.createElement('button');
+    updateButton.classList.add('btn');
+    // updateButton.classList.add('btn-');
+    updateButton.textContent = 'Update';
+    updateButton.addEventListener('click', onUpdate);
+
     const editButton = document.createElement('button');
     editButton.classList.add('btn');
     editButton.classList.add('btn-primary');
     editButton.textContent = 'Cancel';
     editButton.addEventListener('click', onCancel);
 
-    buttonContainer.append(logoutButton, editButton);
+    buttonContainer.append(logoutButton, updateButton, editButton);
     container.append(header, description, buttonContainer);
 
     return container;

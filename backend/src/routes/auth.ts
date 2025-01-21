@@ -10,6 +10,7 @@ import { v4 as uuidv4 } from 'uuid';
 import Emailer from "../utils/Emailer";
 import { promisify } from "util";
 import crypto from 'crypto';
+import authUser from "../auth/middleware/http.auth";
 
 const authRoute = Router()
 
@@ -384,7 +385,7 @@ authRoute.post('/reset/:token', async (req: Request, res: Response) => {
         const { password } = req.body;
 
         if (!password) {
-            return res.status(400).json({ message: 'Password is required' });
+            return res.status(400).json(new ReturnModel(Status.ERROR, 'Password is required', 400));
         }
 
         const user = await UserModel.findOne({
@@ -393,7 +394,7 @@ authRoute.post('/reset/:token', async (req: Request, res: Response) => {
         });
 
         if (!user) {
-            return res.status(400).json({ message: 'Invalid or expired token' });
+            return res.status(400).json(new ReturnModel(Status.ERROR, 'Invalid or expired token', 400));
         }
 
         const hashedPassword = await hashPassword(password);
@@ -404,10 +405,50 @@ authRoute.post('/reset/:token', async (req: Request, res: Response) => {
 
         await user.save();
 
-        res.status(200).json({ message: 'Password has been reset' });
+        res.status(200).json(new ReturnModel(Status.SUCCESS, 'Password has been reset', 200));
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Internal server error' });
+        res.status(500).json(new ReturnModel(Status.ERROR, 'Internal server error', 500, error));
+    }
+});
+
+
+authRoute.get('/user/:id', authUser, async (req, res) => {
+    const userId = req.params.id;
+
+    try {
+        const user = await UserModel.findOne({ user_id: userId }).select('-password -resetPasswordToken -resetPasswordExpires');
+        if (!user) {
+            return res.status(404).json(new ReturnModel(Status.ERROR, 'User not found', 404));
+        }
+        res.status(200).json(new ReturnModel(Status.SUCCESS, 'User data fetched successfully', 200, user));
+    } catch (error) {
+        res.status(500).json(new ReturnModel(Status.ERROR, 'An error occurred while fetching user data', 500, error));
+    }
+});
+
+authRoute.put('/user/:id', authUser, async (req: Request, res: Response) => {
+    const userId = req.params.id;
+    const { firstName, lastName, username, email } = req.body;
+
+    try {
+        const user = await UserModel.findOne({ user_id: userId });
+
+        if (!user) {
+            return res.status(404).json(new ReturnModel(Status.ERROR, 'User not found', 404));
+        }
+
+        user.f_name = firstName || user.f_name;
+        user.l_name = lastName || user.l_name;
+        user.username = username || user.username;
+        user.email = email || user.email;
+
+        await user.save();
+
+
+        res.status(200).json(new ReturnModel(Status.SUCCESS, 'User data updated successfully', 200, user));
+    } catch (error) {
+        res.status(500).json(new ReturnModel(Status.ERROR, 'An error occurred while updating user data', 500, error));
     }
 });
 
