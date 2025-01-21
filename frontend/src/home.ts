@@ -13,12 +13,32 @@ import { Player } from './utils/ActiveEntities';
 import { ChallengeMenu } from './components/ChallengeMenu';
 import { Notification } from './components/NotifyFaildProcess';
 import { Notification as SuccessNotification } from './components/NotifySuccessProcess';
+import { ViewProfile } from './components/ViewProfile';
 
 let App: any = null;
 const appContainer = document.querySelector('#app') as HTMLDivElement;
 
 function viewProfile(userId: string) {
-    console.log(userId);
+    const viewProfileMenu = ViewProfile({
+        user: {
+            id: state.user.id,
+            username: state.user.username,
+            name: state.user.name,
+        },
+        onLogout: () => {
+            localStorage.clear();
+            socketClient.disconnect();
+            viewProfileMenu.remove();
+            window.location.href = "/login.html";
+        },
+        onCancel: () => {
+            viewProfileMenu.remove();
+        }
+
+    })
+
+    appContainer.appendChild(viewProfileMenu);
+
 }
 
 async function populateActiveEntities(accessToken: string) {
