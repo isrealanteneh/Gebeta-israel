@@ -1,7 +1,7 @@
 import './css/style.global.css';
 import './css/home.css';
 import { createApp } from './libs/petite-vue.es';
-import { socketClient } from './utils/Network';
+import { httpClient, socketClient } from './utils/Network';
 import { ActiveEntities } from './utils/ActiveEntities';
 import { AxiosError } from 'axios';
 import { initGebeta } from './game/main';
@@ -13,12 +13,77 @@ import { Player } from './utils/ActiveEntities';
 import { ChallengeMenu } from './components/ChallengeMenu';
 import { Notification } from './components/NotifyFaildProcess';
 import { Notification as SuccessNotification } from './components/NotifySuccessProcess';
+import { ViewProfile } from './components/ViewProfile';
+import { UpdateUserProfile } from './components/UpdateUserProfile';
 
 let App: any = null;
 const appContainer = document.querySelector('#app') as HTMLDivElement;
 
 function viewProfile(userId: string) {
-    console.log(userId);
+    const viewProfileMenu = ViewProfile({
+        user: {
+            id: state.user.id,
+            username: state.user.username,
+            name: state.user.name,
+        },
+        onLogout: () => {
+            localStorage.clear();
+            sessionStorage.clear();
+            socketClient.disconnect();
+            viewProfileMenu.remove();
+            window.location.href = "/login.html";
+        },
+        onUpdate: () => {
+            viewProfileMenu.remove();
+            const accessToken = sessionStorage.getItem("accessToken");
+            if (!accessToken) {
+                console.error("Access token is missing");
+                return;
+            }
+            httpClient.get(`/user/${state.user.id}`, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`
+                }
+            }).then(res => {
+                const updateUserProfile = UpdateUserProfile({
+                    user: {
+                        id: res.data.result.id,
+                        firstName: res.data.result.f_name,
+                        lastName: res.data.result.l_name,
+                        username: res.data.result.username,
+                        email: res.data.result.email
+                    },
+                    onUpdate: (updatedUser) => {
+                        httpClient.put(`/user/${state.user.id}`, updatedUser, {
+                            headers: {
+                                Authorization: `Bearer ${accessToken}`
+                            }
+                        }).then(res => {
+                            Notification("Update Successful", res.data.msg, appContainer);
+                            updateUserProfile.remove();
+                        }).catch(err => {
+                            console.error("Update failed:", err);
+                            Notification("Update Failed! ", err.message, appContainer);
+                        });
+                    },
+                    onCancel: () => {
+                        updateUserProfile.remove();
+                    }
+                });
+
+                appContainer.append(updateUserProfile);
+
+            }).catch(err => {
+                console.error("Failed to fetch user data:", err);
+                Notification("Fetching user Data Failed! ", err.message, appContainer);
+            });
+        },
+        onCancel: () => {
+            viewProfileMenu.remove();
+        }
+    });
+
+    appContainer.appendChild(viewProfileMenu);
 }
 
 async function populateActiveEntities(accessToken: string) {
