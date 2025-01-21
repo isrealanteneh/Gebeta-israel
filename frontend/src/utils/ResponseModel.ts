@@ -1,4 +1,4 @@
-import { Player, Tournament } from "./ActiveEntities"
+import { Game, Player, Tournament } from "./ActiveEntities"
 
 export enum Status {
     SUCCESS = 'success',
@@ -21,7 +21,7 @@ interface ResponseModel {
 export class Response {
     status: Status
     msg: string
-    result: ResponseModel | Tournament[] | Player[] | undefined
+    result: ResponseModel | Tournament[] | Player[] | Game[] | undefined
     code: number
 
     constructor(status: Status, msg: string, code: number, result?: ResponseModel) {

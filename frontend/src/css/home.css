@@ -1,274 +1,299 @@
 #app {
-    display: grid;
-    grid-template-columns: .1fr 1fr;
-    align-items: center;
-    column-gap: 1rem;
-    width: 100%;
-    height: 100vh;
-    padding: 1rem;
-    overflow: hidden;
+  display: grid;
+  grid-template-columns: 0.1fr 1fr;
+  align-items: center;
+  column-gap: 1rem;
+  width: 100%;
+  height: 100vh;
+  padding: 1rem;
+  overflow: hidden;
 }
 
 .main-section {
-    max-height: calc(100vh - 2rem);
-    height: 100%;
-    padding: 1em;
+  max-height: calc(100vh - 2rem);
+  height: 100%;
+  padding: 1em;
 }
 
 .home-section {
-    display: flex;
-    flex-wrap: wrap;
-    width: 100%;
-    height: 100%;
-    column-gap: 1.5em;
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  height: 100%;
+  column-gap: 1.5em;
 }
 
 .histories-container {
-    display: grid;
-    max-width: calc(50% - (1.5em/2));
-    width: 100%;
-    grid-template-rows: repeat(2, 1fr);
+  display: grid;
+  max-width: calc(50% - (1.5em / 2));
+  width: 100%;
+  grid-template-rows: repeat(2, 1fr);
 }
 
 .history {
-    height: calc(50vh - (3rem + 1.5em));
+  height: calc(50vh - (3rem + 1.5em));
 }
 
 .section {
-    height: 100%;
-    width: 100%;
+  height: 100%;
+  width: 100%;
 }
 
 .section-container {
-    display: flex;
-    flex-direction: column;
-    row-gap: 1em;
-    height: 100%;
-    max-height: calc(100vh - 2rem);
-    border-radius: 15px;
-    padding: 2rem;
-    box-shadow: var(--borderShadow);
+  display: flex;
+  flex-direction: column;
+  row-gap: 1em;
+  height: 100%;
+  max-height: calc(100vh - 2rem);
+  border-radius: 15px;
+  padding: 2rem;
+  box-shadow: var(--borderShadow);
+}
+
+.search-container {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 25px;
+  padding: 0px 10px;
+  background-color: #fff;
+}
+.search-container input {
+  border: none;
+  outline: none;
+  padding: 10px;
+  width: 100%;
+  border-radius: 25px;
+  font-size: 16px;
+}
+.search-container button {
+  border: none;
+  background: none;
+  padding: 0 10px;
+  cursor: pointer;
+  font-size: 16px;
+  color: #555;
 }
 
 .welcome-container {
-    flex: 50%;
-    height: fit-content;
-    max-width: calc(50% - (1.5em/2));
+  flex: 50%;
+  height: fit-content;
+  max-width: calc(50% - (1.5em / 2));
 }
 
-.welcome-container>.section-content {
-    overflow: hidden;
+.welcome-container > .section-content {
+  overflow: hidden;
 }
 
-.welcome-container>.section-title {
-    border-bottom: 1px solid var(--accentColor);
+.welcome-container > .section-title {
+  border-bottom: 1px solid var(--accentColor);
 }
 
-.welcome-container>.section-title img {
-    width: 5em;
+.welcome-container > .section-title img {
+  width: 5em;
 }
 
 .section-content {
-    height: 100%;
-    overflow-y: scroll;
+  height: 100%;
+  overflow-y: scroll;
 }
 
 .section-title {
-    display: flex;
-    column-gap: .5em;
-    color: var(--accentColor);
+  display: flex;
+  column-gap: 0.5em;
+  color: var(--accentColor);
 }
 
 .section-title img {
-    width: 1.8em;
+  width: 1.8em;
 }
 
 nav {
-    display: flex;
-    flex-direction: column;
-    width: 6rem;
-    row-gap: 1rem;
-    align-items: center;
-    border-radius: 15px;
-    padding: 1rem .5rem;
-    box-shadow: var(--borderShadow);
+  display: flex;
+  flex-direction: column;
+  width: 6rem;
+  row-gap: 1rem;
+  align-items: center;
+  border-radius: 15px;
+  padding: 1rem 0.5rem;
+  box-shadow: var(--borderShadow);
 }
 
 .logo-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    padding: .5rem;
-    width: 3rem;
-    height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  padding: 0.5rem;
+  width: 3rem;
+  height: 3rem;
 }
 
 .logo-container img {
-    width: 4rem;
+  width: 4rem;
 }
 
 .tab-container {
-    display: flex;
-    flex-direction: column;
-    row-gap: 1rem;
+  display: flex;
+  flex-direction: column;
+  row-gap: 1rem;
 }
 
 .tab {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    padding: .5rem;
-    width: 3rem;
-    height: 3rem;
-    cursor: pointer;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  padding: 0.5rem;
+  width: 3rem;
+  height: 3rem;
+  cursor: pointer;
 }
 
 .tab:active {
-    border: none;
+  border: none;
 }
 
 .tab:hover {
-    border: 2px solid var(--accentColor);
-    border-radius: 50%;
+  border: 2px solid var(--accentColor);
+  border-radius: 50%;
 }
 
 #home:hover::after {
-    content: "Home"
+  content: "Home";
 }
 
 #search:hover::after {
-    content: "Search"
+  content: "Search";
 }
 
 #game:hover::after {
-    content: "Active Players"
+  content: "Active Players";
 }
 
 #hunter:hover::after {
-    content: "Tournaments"
+  content: "Tournaments";
 }
 
 .tab:hover::after {
-    position: absolute;
-    top: -50%;
-    left: 100%;
-    width: max-content;
-    background-color: var(--disabledAccentColor);
-    color: var(--whiteColor);
-    padding: .5rem;
-    border-radius: 1em 1em 1em 0;
+  position: absolute;
+  top: -50%;
+  left: 100%;
+  width: max-content;
+  background-color: var(--disabledAccentColor);
+  color: var(--whiteColor);
+  padding: 0.5rem;
+  border-radius: 1em 1em 1em 0;
 }
 
 .tab img {
-    width: 3rem;
+  width: 3rem;
 }
 
 .side-menu {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .profile-section-container {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 .profile-description-container {
-    display: flex;
-    flex-direction: column;
-    /* row-gap: 1em; */
-    row-gap: .3em;
-    padding: 1em;
+  display: flex;
+  flex-direction: column;
+  /* row-gap: 1em; */
+  row-gap: 0.3em;
+  padding: 1em;
 }
 
 .profile-description-container li {
-    list-style-type: none;
-    list-style-position: inside;
-    /* border: 2px solid blue; */
-    line-height: 1.4rem;
+  list-style-type: none;
+  list-style-position: inside;
+  /* border: 2px solid blue; */
+  line-height: 1.4rem;
 }
 
 .tournament-history-container,
 .game-history-container {
-    overflow-y: scroll;
-    max-height: calc(100% - 2rem);
+  overflow-y: scroll;
+  max-height: calc(100% - 2rem);
 }
 
 .game-history,
 .tournament-history {
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
 }
 
 .tournament-history {
-    justify-content: flex-start;
+  justify-content: flex-start;
 }
 
 .person,
 .tournament {
-    padding: 1em;
-    display: flex;
-    column-gap: 1rem;
+  padding: 1em;
+  display: flex;
+  column-gap: 1rem;
 }
 
 .person h4,
 .tournament h4 {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 .person ul,
 .tournament ul {
-    list-style-type: none;
-    list-style-position: inside;
+  list-style-type: none;
+  list-style-position: inside;
 }
 
 .tournament {
-    flex-direction: column;
-    row-gap: 1rem;
-    width: 100%;
+  flex-direction: column;
+  row-gap: 1rem;
+  width: 100%;
 }
 
 .game-history img {
-    width: 3rem;
+  width: 3rem;
 }
 
 .active-players,
 .active-tournaments {
-    max-width: 50%;
-    height: 100%;
+  max-width: 50%;
+  height: 100%;
 }
 
 .active-player-list {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
 }
 
-.active-player-list>.avatar,
+.active-player-list > .avatar,
 .active-player-info,
 .call-to-action {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: .5em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.5em;
 }
 
 .active-player-list .avatar img {
-    width: 5em;
-    height: 5em;
+  width: 5em;
+  height: 5em;
 }
 
 .active-player-list .active-player-info {
-    flex-direction: column;
-    align-items: flex-start;
-    row-gap: .15em;
+  flex-direction: column;
+  align-items: flex-start;
+  row-gap: 0.15em;
 
-    li {
-        list-style: none;
-    }
+  li {
+    list-style: none;
+  }
 }
